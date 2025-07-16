@@ -20,7 +20,7 @@ import {
   NODE_LOOP,
   NODE_INACTIVE_UID
 } from '../../common'
-import { useCanvas, useTranslate, useMaterial } from '@opentiny/tiny-engine-meta-register'
+import { useCanvas, useTranslate, useMaterial, useMessage } from '@opentiny/tiny-engine-meta-register'
 import { utils } from '@opentiny/tiny-engine-utils'
 import { isVsCodeEnv } from '@opentiny/tiny-engine-common/js/environments'
 import Builtin from '../../render/src/builtin/builtin.json' //TODO 画布内外应该分开
@@ -1041,6 +1041,18 @@ export const canvasApi = {
   },
   updateCanvas: (...args: any[]) => {
     return canvasState.renderer.updateCanvas(...args)
+  },
+  // 新增：切换渲染模式
+  switchRenderMode: (isRuntimeMode: boolean) => {
+    const mode = isRuntimeMode ? 'runtime' : 'design'
+    setDesignMode(mode)
+    // 通知画布重新渲染
+    canvasState.renderer?.updateCanvas?.()
+    // 发送模式切换消息
+    useMessage().publish({
+      topic: 'renderModeChanged',
+      data: { mode, isRuntimeMode }
+    })
   },
   dragEnd
 }

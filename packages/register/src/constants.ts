@@ -42,6 +42,7 @@ export const META_APP = {
   Lock: 'engine.toolbars.lock',
   Setting: 'engine.toolbars.setting',
   Lang: 'engine.toolbars.lang',
+  SwitchMode: 'engine.toolbars.switchMode',
   Block: 'engine.plugins.materials.block',
   Component: 'engine.plugins.materials.component',
   Materials: 'engine.plugins.materials',

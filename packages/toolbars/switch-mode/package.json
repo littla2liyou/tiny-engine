@@ -1,0 +1,20 @@
+{
+  "name": "@opentiny/tiny-engine-toolbars-switch-mode",
+  "version": "1.0.0",
+  "description": "TinyEngine Switch Runtime Toolbar",
+  "main": "index.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@opentiny/tiny-engine-common": "workspace:*",
+    "@opentiny/tiny-engine-meta-register": "workspace:*",
+    "@opentiny/vue": "~3.20.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.2",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "vue": "^3.4.15"
+  }
+}
