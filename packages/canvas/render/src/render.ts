@@ -128,6 +128,38 @@ const getBindProps = (
     bindProps.onClickCapture = stopEvent
   }
 
+  // 新增：RUNTIME模式下，绑定state和事件
+  if (getDesignMode() === DESIGN_MODE.RUNTIME) {
+    // eslint-disable-next-line no-console
+    console.log('RUNTIME模式下，绑定state和事件')
+    // 1. 绑定state
+    if (pageContext?.state) {
+      Object.assign(bindProps, pageContext.state)
+    }
+    // 2. 绑定事件
+    Object.keys(schema.props || {}).forEach((key) => {
+      if (key.startsWith('on') && typeof schema.props[key] === 'function') {
+        bindProps[key] = schema.props[key]
+      }
+    })
+  } else {
+    // 设计态模式下，清理运行态绑定的内容
+    // eslint-disable-next-line no-console
+    console.log('DESIGN模式下，清理运行态绑定')
+    // 1. 清理state绑定
+    if (pageContext?.state) {
+      Object.keys(pageContext.state).forEach((key) => {
+        delete bindProps[key]
+      })
+    }
+    // 2. 清理事件绑定
+    Object.keys(schema.props || {}).forEach((key) => {
+      if (key.startsWith('on') && typeof schema.props[key] === 'function') {
+        delete bindProps[key]
+      }
+    })
+  }
+
   if (Mapper[componentName as keyof typeof Mapper]) {
     bindProps.schema = schema
   }
