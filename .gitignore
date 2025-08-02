@@ -8,7 +8,7 @@ lerna-debug.log
 packages/design-core/bundle-deps
 designer-demo/bundle-deps
 MY_Document
-mockServer
+mockServer/
 
 # local env files
 .env.local
