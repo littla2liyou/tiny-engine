@@ -10,7 +10,8 @@
  *
  */
 
-import { shallowReactive } from 'vue'
+import { shallowReactive, ref } from 'vue'
+import { useBridge } from '../application-function'
 
 export function useContext() {
   const context = shallowReactive({})
@@ -74,16 +75,42 @@ export function useCssScopeId() {
     setCssScopeId
   }
 }
+
+export function useRuntimeState() {
+  const runtimeState = ref({})
+  const setRuntimeState = (key: string, value: any) => {
+    runtimeState.value[key] = value
+  }
+  const getRuntimeState = (key: string) => {
+    return runtimeState.value[key]
+  }
+  const clearRuntimeState = () => {
+    runtimeState.value = {}
+  }
+  
+  return {
+    runtimeState,
+    setRuntimeState,
+    getRuntimeState,
+    clearRuntimeState
+  }
+}
+
 export function usePageContext() {
   const contextExpose = useContext()
   const conditionExpose = useCondition()
   const contextParentExpose = usePageContextParent()
   const cssCopeIdExpose = useCssScopeId()
+  const runtimeStateExpose = useRuntimeState()
+  const { bridge } = useBridge()
+  
   return {
     ...contextExpose,
     ...conditionExpose,
     ...contextParentExpose,
     ...cssCopeIdExpose,
+    ...runtimeStateExpose,
+    bridge,
     pageId: '',
     active: false
   }

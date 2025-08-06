@@ -14,6 +14,7 @@ import { provide, watch, defineComponent, ref, inject, onUnmounted, h, type Prop
 import {
   getDesignMode,
   setDesignMode,
+  DESIGN_MODE,
   setController,
   useCustomRenderer,
   getController,
@@ -29,6 +30,7 @@ import CanvasEmpty from './canvas-function/CanvasEmpty.vue'
 import { setCurrentPage } from './canvas-function/page-switcher'
 import { useThrottleFn } from '@vueuse/core'
 import { useRouterPreview } from './canvas-function/router-preview'
+import { setupRuntimeDataBinding } from './runtime'
 
 // global-context singleton
 const { context: globalContext, setContext: setGlobalContext } = useContext()
@@ -55,6 +57,7 @@ export const activePageContext = usePageContext()
 const {
   schema: activeSchema,
   setSchema,
+  setState,
   setPageCss
 } = useSchema(activePageContext, {
   utils,
@@ -135,6 +138,12 @@ export default defineComponent({
     pageContext.pageId = props.pageId || pageIdFromPath
     pageContext.active = props.active || !pageIdFromPath || props.entry
     pageContext.setCssScopeId(props.cssScopeId || `data-te-page-${pageContext.pageId}`)
+    
+    // 设置运行时数据绑定
+    if (getDesignMode() === DESIGN_MODE.RUNTIME) {
+      setupRuntimeDataBinding(pageContext, setState, updateCanvas)
+    }
+    
     if (props.entry) {
       provide('page-ancestors', pageAncestors)
       provide('page-preview', useRouterPreview().previewPath)

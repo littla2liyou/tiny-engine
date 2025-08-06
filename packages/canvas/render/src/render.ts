@@ -10,19 +10,116 @@
  *
  */
 
-import { defineComponent, h, inject, provide, type Ref, Suspense } from 'vue'
+import { defineComponent, h, inject, provide, type Ref, Suspense, computed, ref, watch, type PropType } from 'vue'
 import {
   NODE_UID as DESIGN_UIDKEY,
   NODE_TAG as DESIGN_TAGKEY,
   NODE_LOOP as DESIGN_LOOPID,
   NODE_INACTIVE_UID
 } from '../../common'
-import { getDesignMode, DESIGN_MODE } from './canvas-function'
+import { getDesignMode, DESIGN_MODE, getController } from './canvas-function'
 import { parseCondition, parseData, parseLoopArgs } from './data-function'
 import { blockSlotDataMap, getComponent, Mapper, configure } from './material-function'
 import { getPage } from './material-function/page-getter'
 import BlockLoading from './BlockLoading.vue'
+import { handleRuntimeEvent } from './runtime'
 import type { Node } from '../../types'
+
+/**
+ * 通用运行时事件处理方法（优化版本）
+ * 处理所有类型为JSFunction的方法，包括DOM事件和自定义方法
+ */
+const setupRuntimeEventHandling = (
+  schema: Node,
+  bindProps: Record<string, any>,
+  pageContext: Record<string, any>
+) => {
+  // 缓存updateCanvas函数，避免重复调用getController
+  const updateCanvas = () => getController()?.updateCanvas?.()
+  
+  // 处理 v-model 双向绑定
+  if (bindProps.modelValue !== undefined && !bindProps['onUpdate:modelValue']) {
+    // eslint-disable-next-line no-console
+    console.log('[Runtime] 为组件添加 v-model 支持:', schema.componentName, '当前值:', bindProps.modelValue)
+    
+    bindProps['onUpdate:modelValue'] = (newValue: any) => {
+      // eslint-disable-next-line no-console
+      console.log('[Runtime] v-model 更新:', schema.componentName, '新值:', newValue, '旧值:', bindProps.modelValue)
+      
+      // 更新 modelValue
+      bindProps.modelValue = newValue
+      
+      // 触发运行时事件处理
+      try {
+        handleRuntimeEvent(
+          { type: 'update:modelValue', target: { value: newValue } } as any, 
+          schema, 
+          pageContext, 
+          updateCanvas
+        )
+        // eslint-disable-next-line no-console
+        console.log('[Runtime] v-model 更新完成:', schema.componentName)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[Runtime] v-model 更新失败:', error)
+      }
+    }
+    
+    // eslint-disable-next-line no-console
+    console.log('[Runtime] v-model 处理器添加完成:', schema.componentName)
+  }
+  
+  // 处理已经解析的函数（parseData处理后的）
+  // 检查bindProps中是否有事件处理器需要运行时处理
+  const eventHandlers = ['onClick', 'onChange', 'onInput', 'onSubmit', 'onFocus', 'onBlur']
+  eventHandlers.forEach(eventName => {
+    if (bindProps[eventName]) {
+      // eslint-disable-next-line no-console
+      console.log('[Runtime] 发现事件处理器:', eventName, '组件:', schema.componentName, '类型:', typeof bindProps[eventName])
+      const originalHandler = bindProps[eventName]
+      
+      // 检查是否已经被包装过（避免重复包装）
+      if (!originalHandler._runtimeWrapped) {
+        bindProps[eventName] = (...args: any[]) => {
+          // eslint-disable-next-line no-console
+          console.log('[Runtime] 执行事件处理器:', eventName, '组件:', schema.componentName, '参数数量:', args.length)
+          
+          // 先执行原有的事件处理器
+          if (originalHandler) {
+            try {
+              const result = originalHandler(...args)
+              // eslint-disable-next-line no-console
+              console.log('[Runtime] 原有事件处理器执行完成:', eventName, '组件:', schema.componentName, '结果:', result)
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('[Runtime] 执行原有事件处理器失败:', error)
+            }
+          }
+          
+          // 执行运行时事件处理
+          const event = args[0]
+          if (event && event.type) {
+            try {
+              handleRuntimeEvent(event, schema, pageContext, updateCanvas)
+              // eslint-disable-next-line no-console
+              console.log('[Runtime] 运行时事件处理完成:', eventName, '组件:', schema.componentName)
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('[Runtime] 执行运行时事件处理失败:', error)
+            }
+          }
+        }
+        
+        // 标记为已包装，避免重复包装
+        bindProps[eventName]._runtimeWrapped = true
+        
+        // eslint-disable-next-line no-console
+        console.log('[Runtime] 事件处理器包装完成:', eventName, '组件:', schema.componentName)
+      }
+    }
+  })
+
+}
 
 export const renderDefault = (children: Node[], scope: Record<string, any>, parent: Node) =>
   children.map?.((child) =>
@@ -123,41 +220,18 @@ const getBindProps = (
     bindProps[DESIGN_LOOPID] = scope.index === undefined ? scope.idx : scope.index
   }
 
-  // 在捕获阶段阻止事件的传播
+  // 在捕获阶段阻止事件的传播（仅在设计模式下）
   if (clickCapture(componentName) && getDesignMode() === DESIGN_MODE.DESIGN && active) {
     bindProps.onClickCapture = stopEvent
   }
 
-  // 新增：RUNTIME模式下，绑定state和事件
   if (getDesignMode() === DESIGN_MODE.RUNTIME) {
-    // eslint-disable-next-line no-console
-    console.log('RUNTIME模式下，绑定state和事件')
-    // 1. 绑定state
-    // if (pageContext?.state) {
-    //   Object.assign(bindProps, pageContext.state)
-    // }
-    // 2. 绑定事件
-    // Object.keys(schema.props || {}).forEach((key) => {
-    //   if (key.startsWith('on') && typeof schema.props[key] === 'function') {
-    //     bindProps[key] = schema.props[key]
-    //   }
-    // })
+    // 运行时模式：通用的事件和方法处理
+    setupRuntimeEventHandling(schema, bindProps, pageContext)
+    
   } else {
-    // 设计态模式下，清理运行态绑定的内容
     // eslint-disable-next-line no-console
-    console.log('DESIGN模式下，清理运行态绑定')
-    // 1. 清理state绑定
-    // if (pageContext?.state) {
-    //   Object.keys(pageContext.state).forEach((key) => {
-    //     delete bindProps[key]
-    //   })
-    // }
-    // 2. 清理事件绑定
-    // Object.keys(schema.props || {}).forEach((key) => {
-    //   if (key.startsWith('on') && typeof schema.props[key] === 'function') {
-    //     delete bindProps[key]
-    //   }
-    // })
+    console.log('[Design] 设计模式')
   }
 
   if (Mapper[componentName as keyof typeof Mapper]) {
@@ -327,8 +401,8 @@ const renderComponent = (
 
     const Ele = h(
       getComponent(componentName),
-      getBindProps(schema, mergeScope, pageContext?.context, pageContext),
-      getChildren(schema, mergeScope, pageContext, parent, renderComponent, ancestors)
+      getBindProps(schema, mergeScope, pageContext?.context || {}, pageContext || {}),
+      getChildren(schema, mergeScope, pageContext || {}, parent, renderComponent, ancestors || [])
     )
 
     // 区块加上 suspense 渲染，就可以在网络延时的时候显示加载中的字样或者动画，优化体验
@@ -352,7 +426,7 @@ const renderComponent = (
 export const renderer = defineComponent({
   name: 'renderer',
   props: {
-    schema: Object,
+    schema: Object as PropType<Node>,
     scope: Object,
     parent: Object,
     pageContext: Object
@@ -361,16 +435,34 @@ export const renderer = defineComponent({
     provide('schema', props.schema)
     const currentPageContext = props.pageContext || inject('pageContext')
     const ancestors = inject('page-ancestors') as Ref<any[]>
+    
+    // 创建一个响应式的渲染触发器
+    const renderTrigger = ref(0)
+    
+    // 使用computed来追踪pageContext的变化，建立响应式依赖
+    const reactivePageContext = computed(() => {
+      return currentPageContext
+    })
+    
+    // 监听pageContext的变化，更新渲染触发器
+    watch(reactivePageContext, () => {
+      renderTrigger.value++
+    }, { deep: true })
+    
     return {
-      currentPageContext,
-      ancestors
+      currentPageContext: reactivePageContext,
+      ancestors,
+      renderTrigger
     }
   },
   render() {
-    const { scope, schema, parent, ancestors } = this
+    const { scope, schema, parent, ancestors, renderTrigger } = this
     const pageContext = this.currentPageContext
 
-    return renderComponent(schema, scope, pageContext, parent, ancestors)
+    // 使用renderTrigger作为key，确保pageContext变化时组件重新渲染
+    return h('div', { key: renderTrigger }, [
+      schema && pageContext ? renderComponent(schema, scope, pageContext, parent, ancestors) : null
+    ])
   }
 })
 export { getController } from './canvas-function'
