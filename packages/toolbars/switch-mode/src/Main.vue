@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar-switch-mode">
     <toolbar-base
-      :content="isRuntimeMode ? '切换为设计态' : '切换为运行态'"
+      :content="isRuntimeMode ? '切换为设计态渲染' : '切换为运行态渲染'"
       :icon="currentIcon"
       :options="options"
       @click-api="switchMode"
@@ -101,7 +101,7 @@ export default {
       console.log('[SwitchMode] 切换前模式:', prevMode, '切换后模式:', afterMode)
       useNotify({
         type: 'success',
-        message: `已切换到${next ? '运行态' : '设计态'}模式（测试模式）`
+        message: `已切换到${next ? '运行态' : '设计态'}渲染模式`
       })
     }
 
