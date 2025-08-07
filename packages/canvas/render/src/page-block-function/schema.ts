@@ -51,6 +51,8 @@ export function useSchema(
   )
 
   const setSchema = async (data: IPageSchema, pageId?: string) => {
+    // eslint-disable-next-line no-console
+    console.log('[Schema Update] New schema data:', data) // Log added
     const newSchema = JSON.parse(JSON.stringify(data || schema))
     reset(schema)
     // 页面初始化的时候取消所有状态变量的watchEffect监听
@@ -91,6 +93,8 @@ export function useSchema(
 
     // 这里setState（会触发画布渲染），是因为状态管理里面的变量会用到props、utils、bridge、stores、methods
     setState(newSchema.state)
+    // eslint-disable-next-line no-console
+    console.log('[State Update] State after schema update:', state) // Log added
 
     await nextTick()
     setPageCss(data.css, pageId)

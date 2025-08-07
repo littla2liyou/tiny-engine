@@ -29,73 +29,50 @@ import type { Node } from '../../types'
  * 通用运行时事件处理方法（优化版本）
  * 处理所有类型为JSFunction的方法，包括DOM事件和自定义方法
  */
-const setupRuntimeEventHandling = (
-  schema: Node,
-  bindProps: Record<string, any>,
-  pageContext: Record<string, any>
-) => {
+const setupRuntimeEventHandling = (schema: Node, bindProps: Record<string, any>, pageContext: Record<string, any>) => {
   // 缓存updateCanvas函数，避免重复调用getController
   const updateCanvas = () => getController()?.updateCanvas?.()
-  
-  // 处理 v-model 双向绑定
-  if (bindProps.modelValue !== undefined && !bindProps['onUpdate:modelValue']) {
-    // eslint-disable-next-line no-console
-    console.log('[Runtime] 为组件添加 v-model 支持:', schema.componentName, '当前值:', bindProps.modelValue)
-    
-    bindProps['onUpdate:modelValue'] = (newValue: any) => {
-      // eslint-disable-next-line no-console
-      console.log('[Runtime] v-model 更新:', schema.componentName, '新值:', newValue, '旧值:', bindProps.modelValue)
-      
-      // 更新 modelValue
-      bindProps.modelValue = newValue
-      
-      // 触发运行时事件处理
-      try {
-        handleRuntimeEvent(
-          { type: 'update:modelValue', target: { value: newValue } } as any, 
-          schema, 
-          pageContext, 
-          updateCanvas
-        )
-        // eslint-disable-next-line no-console
-        console.log('[Runtime] v-model 更新完成:', schema.componentName)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('[Runtime] v-model 更新失败:', error)
-      }
-    }
-    
-    // eslint-disable-next-line no-console
-    console.log('[Runtime] v-model 处理器添加完成:', schema.componentName)
-  }
-  
-  // 处理已经解析的函数（parseData处理后的）
+
   // 检查bindProps中是否有事件处理器需要运行时处理
   const eventHandlers = ['onClick', 'onChange', 'onInput', 'onSubmit', 'onFocus', 'onBlur']
-  eventHandlers.forEach(eventName => {
+  eventHandlers.forEach((eventName) => {
     if (bindProps[eventName]) {
       // eslint-disable-next-line no-console
-      console.log('[Runtime] 发现事件处理器:', eventName, '组件:', schema.componentName, '类型:', typeof bindProps[eventName])
+      console.log(
+        '[Runtime] 发现事件处理器:',
+        eventName,
+        '组件:',
+        schema.componentName,
+        '类型:',
+        typeof bindProps[eventName]
+      )
       const originalHandler = bindProps[eventName]
-      
+
       // 检查是否已经被包装过（避免重复包装）
       if (!originalHandler._runtimeWrapped) {
         bindProps[eventName] = (...args: any[]) => {
           // eslint-disable-next-line no-console
           console.log('[Runtime] 执行事件处理器:', eventName, '组件:', schema.componentName, '参数数量:', args.length)
-          
+
           // 先执行原有的事件处理器
           if (originalHandler) {
             try {
               const result = originalHandler(...args)
               // eslint-disable-next-line no-console
-              console.log('[Runtime] 原有事件处理器执行完成:', eventName, '组件:', schema.componentName, '结果:', result)
+              console.log(
+                '[Runtime] 原有事件处理器执行完成:',
+                eventName,
+                '组件:',
+                schema.componentName,
+                '结果:',
+                result
+              )
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('[Runtime] 执行原有事件处理器失败:', error)
             }
           }
-          
+
           // 执行运行时事件处理
           const event = args[0]
           if (event && event.type) {
@@ -109,16 +86,15 @@ const setupRuntimeEventHandling = (
             }
           }
         }
-        
+
         // 标记为已包装，避免重复包装
         bindProps[eventName]._runtimeWrapped = true
-        
+
         // eslint-disable-next-line no-console
         console.log('[Runtime] 事件处理器包装完成:', eventName, '组件:', schema.componentName)
       }
     }
   })
-
 }
 
 export const renderDefault = (children: Node[], scope: Record<string, any>, parent: Node) =>
@@ -228,7 +204,6 @@ const getBindProps = (
   if (getDesignMode() === DESIGN_MODE.RUNTIME) {
     // 运行时模式：通用的事件和方法处理
     setupRuntimeEventHandling(schema, bindProps, pageContext)
-    
   } else {
     // eslint-disable-next-line no-console
     console.log('[Design] 设计模式')
@@ -435,20 +410,24 @@ export const renderer = defineComponent({
     provide('schema', props.schema)
     const currentPageContext = props.pageContext || inject('pageContext')
     const ancestors = inject('page-ancestors') as Ref<any[]>
-    
+
     // 创建一个响应式的渲染触发器
     const renderTrigger = ref(0)
-    
+
     // 使用computed来追踪pageContext的变化，建立响应式依赖
     const reactivePageContext = computed(() => {
       return currentPageContext
     })
-    
+
     // 监听pageContext的变化，更新渲染触发器
-    watch(reactivePageContext, () => {
-      renderTrigger.value++
-    }, { deep: true })
-    
+    watch(
+      reactivePageContext,
+      () => {
+        renderTrigger.value++
+      },
+      { deep: true }
+    )
+
     return {
       currentPageContext: reactivePageContext,
       ancestors,
