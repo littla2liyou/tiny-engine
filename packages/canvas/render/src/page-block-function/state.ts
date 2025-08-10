@@ -1,10 +1,10 @@
-import { shallowReactive } from 'vue'
+import { reactive } from 'vue'
 
 import { getDeletedKeys } from '../data-utils'
 import { isStateAccessor, parseData } from '../data-function'
 
 export function useState({ getContext, generateStateAccessors }) {
-  const state = shallowReactive({})
+  const state = reactive({})
 
   const setState = (data) => {
     if (typeof data !== 'object' || data === null) {
