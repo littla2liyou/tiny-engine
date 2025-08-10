@@ -31,6 +31,7 @@ export default {
     collapse: [
       [META_APP.Collaboration],
       [META_APP.Refresh, META_APP.Fullscreen],
+      [META_APP.SwitchMode],
       [META_APP.Lang],
       [META_APP.ViewSetting]
     ]

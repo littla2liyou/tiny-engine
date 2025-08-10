@@ -1042,6 +1042,13 @@ export const canvasApi = {
   updateCanvas: (...args: any[]) => {
     return canvasState.renderer.updateCanvas(...args)
   },
+  // 新增：切换渲染模式
+  switchRenderMode: (isRuntimeMode: boolean) => {
+    const mode = isRuntimeMode ? 'runtime' : 'design'
+    setDesignMode(mode)
+    // 通知画布重新渲染
+    canvasState.renderer?.updateCanvas?.()
+  },
   dragEnd
 }
 

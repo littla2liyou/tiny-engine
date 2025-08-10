@@ -34,6 +34,8 @@ export const META_APP = {
   Clean: 'engine.toolbars.clean',
   ThemeSwitch: 'engine.toolbars.themeSwitch',
   Refresh: 'engine.toolbars.refresh',
+  // 设计态渲染模式切换按钮
+  SwitchMode: 'engine.toolbars.switch-mode',
   Save: 'engine.toolbars.save',
   GenerateCode: 'engine.toolbars.generate-code',
   Preview: 'engine.toolbars.preview',
