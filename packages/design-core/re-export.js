@@ -13,7 +13,7 @@ export { default as ThemeSwitch, ThemeSwitchService } from '@opentiny/tiny-engin
 export { default as Preview } from '@opentiny/tiny-engine-toolbar-preview'
 export { default as GenerateCode, SaveLocalService } from '@opentiny/tiny-engine-toolbar-generate-code'
 export { default as Refresh } from '@opentiny/tiny-engine-toolbar-refresh'
-export { default as SwitchMode } from '../toolbars/switch-mode' // to_fix目前仅为本地包
+export { default as SwitchMode } from '@opentiny/tiny-engine-toolbar-switch-mode'
 export { default as Collaboration } from '@opentiny/tiny-engine-toolbar-collaboration'
 export { default as Setting } from '@opentiny/tiny-engine-toolbar-setting'
 export { default as Materials, ResourceService, MaterialService } from '@opentiny/tiny-engine-plugin-materials'
