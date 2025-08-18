@@ -6,6 +6,7 @@
       [activeClass]: active,
       [exactActiveClass]: exactActive
     }"
+    @click="handleClick"
   >
     <slot :href="to" :isActive="active" :isExactActive="exactActive"></slot>
   </a>
@@ -36,7 +37,7 @@ export default {
         return false
       }
 
-      return pageAncestor.includes(props.to.name)
+      return pageAncestor?.includes(props.to.name)
     })
 
     const exactActive = computed(() => {
@@ -47,9 +48,24 @@ export default {
       return props.to.name === pageAncestor[pageAncestor.length - 1]
     })
 
+    const handleClick = () => {
+      if (!props.to?.name) {
+        return
+      }
+
+      const message = {
+        type: 'canvas-page-switch',
+        pageId: props.to.name
+      }
+
+      // 向父窗口发送消息
+      window.parent.postMessage(message, '*')
+    }
+
     return {
       active,
-      exactActive
+      exactActive,
+      handleClick
     }
   }
 }
