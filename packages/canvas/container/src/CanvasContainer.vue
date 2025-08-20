@@ -60,14 +60,7 @@
 <script>
 import { onMounted, ref, computed, onUnmounted, watch, watchEffect } from 'vue'
 import { iframeMonitoring } from '@opentiny/tiny-engine-common/js/monitor'
-import {
-  useTranslate,
-  useCanvas,
-  useMessage,
-  useResource,
-  usePage,
-  useNotify
-} from '@opentiny/tiny-engine-meta-register'
+import { useTranslate, useCanvas, useMessage, useResource, useNotify } from '@opentiny/tiny-engine-meta-register'
 import { NODE_UID, NODE_LOOP, DESIGN_MODE } from '../../common'
 import { registerHotkeyEvent, removeHotkeyEvent } from './keyboard'
 import CanvasMenu, { closeMenu, openMenu } from './components/CanvasMenu.vue'
@@ -453,28 +446,19 @@ export default {
 
       // 监听来自 CanvasRouterLink 的 postMessage
       const handleCanvasPageSwitch = (event) => {
-        // 检查消息来源和类型
-        if (event.data && event.data.type === 'canvas-page-switch') {
+        if (canvasApi.validatePageSwitchMessage(event)) {
           const { pageId } = event.data
-
-          if (pageId) {
-            try {
-              const pageService = usePage()
-              const { switchPage } = pageService
-
-              switchPage(pageId, true)
-            } catch (error) {
-              useNotify({
-                type: 'error',
-                message: '页面跳转失败'
-              })
-            }
-          }
+          canvasApi.handleCanvasPageSwitch(pageId).catch((_error) => {
+            useNotify({
+              type: 'error',
+              message: '页面跳转失败'
+            })
+          })
         }
       }
+
       window.addEventListener('message', handleCanvasPageSwitch)
 
-      // 在组件卸载时移除事件监听
       onUnmounted(() => {
         window.removeEventListener('message', handleCanvasPageSwitch)
       })

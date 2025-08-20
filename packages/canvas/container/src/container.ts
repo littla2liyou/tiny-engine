@@ -20,7 +20,7 @@ import {
   NODE_LOOP,
   NODE_INACTIVE_UID
 } from '../../common'
-import { useCanvas, useTranslate, useMaterial } from '@opentiny/tiny-engine-meta-register'
+import { useCanvas, useTranslate, useMaterial, usePage } from '@opentiny/tiny-engine-meta-register'
 import { utils } from '@opentiny/tiny-engine-utils'
 import { isVsCodeEnv } from '@opentiny/tiny-engine-common/js/environments'
 import Builtin from '../../render/src/builtin/builtin.json' //TODO 画布内外应该分开
@@ -1046,8 +1046,17 @@ export const canvasApi = {
   switchRenderMode: (isRuntimeMode: boolean) => {
     const mode = isRuntimeMode ? 'runtime' : 'design'
     setDesignMode(mode)
-    // 通知画布重新渲染
     canvasState.renderer?.updateCanvas?.()
+  },
+  // 新增：验证页面跳转消息
+  validatePageSwitchMessage: (event: MessageEvent) => {
+    return event.data && event.data.type === 'canvas-page-switch' && event.data.pageId
+  },
+  // 新增：处理画布内页面跳转
+  handleCanvasPageSwitch: async (pageId: string) => {
+    const pageService = usePage()
+    const { switchPage } = pageService
+    return await switchPage(pageId, true)
   },
   dragEnd
 }
