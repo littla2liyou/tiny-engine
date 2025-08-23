@@ -785,6 +785,16 @@ export const dragMove = (event: DragEvent, isHover: boolean) => {
 
   const eventTarget = event.target as Element
 
+  // 检查是否为运行时模式，如果是则禁止拖拽
+  const designMode = getDesignMode()
+  if (designMode === 'runtime') {
+    const element = getElement(eventTarget)
+    if (element) {
+      lineState.forbidden = true
+    }
+    return
+  }
+
   const { x, y, bottom: offsetBottom, top: offsetTop } = getOffset(eventTarget)
   const { clientX, clientY } = event
   const { element } = dragState
