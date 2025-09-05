@@ -11,6 +11,8 @@ designer-demo/bundle-deps
 # local env files
 .env.local
 .env.*.local
+.gitignore
+MY_Document
 
 # Log files
 npm-debug.log*
