@@ -18,7 +18,8 @@ import {
   useCustomRenderer,
   getController,
   useRouterViewSetting,
-  useLocale
+  useLocale,
+  DESIGN_MODE
 } from './canvas-function'
 import { removeBlockCompsCache, setConfigure } from './material-function'
 import { useUtils, useBridge, useDataSourceMap, useGlobalState } from './application-function'
@@ -29,6 +30,7 @@ import CanvasEmpty from './canvas-function/CanvasEmpty.vue'
 import { setCurrentPage } from './canvas-function/page-switcher'
 import { useThrottleFn } from '@vueuse/core'
 import { useRouterPreview } from './canvas-function/router-preview'
+import { ReactivePageComponent } from './ReactivePageComponent'
 
 // global-context singleton
 const { context: globalContext, setContext: setGlobalContext } = useContext()
@@ -278,16 +280,33 @@ export default defineComponent({
 
     const pageRenderer = getRenderer()
 
-    return () =>
-      pageAncestors.value === null
-        ? h(CanvasEmpty, { placeholderText: '页面分析加载中' })
-        : pageRenderer(
-            schema,
-            refreshKey,
-            props.entry,
-            pageContext.active,
-            !!pageContext.pageId && pageAncestors.value.length
-          )
+    return () => {
+      if (pageAncestors.value === null) {
+        return h(CanvasEmpty, { placeholderText: '页面分析加载中' })
+      }
+
+      // 在运行态下使用响应式组件，实现真正的响应式生命周期
+      if (getDesignMode() === DESIGN_MODE.RUNTIME) {
+        return h(ReactivePageComponent, {
+          schema,
+          pageContext,
+          renderer: pageRenderer,
+          refreshKey: refreshKey.value,
+          entry: props.entry,
+          active: pageContext.active,
+          pageId: pageContext.pageId
+        })
+      }
+
+      // 在设计态下使用原有的渲染器
+      return pageRenderer(
+        schema,
+        refreshKey,
+        props.entry,
+        pageContext.active,
+        !!pageContext.pageId && pageAncestors.value.length
+      )
+    }
   }
 })
 
