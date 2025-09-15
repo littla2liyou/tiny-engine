@@ -1,0 +1,123 @@
+{
+  "componentName": "Page",
+  "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
+  "props": {
+    "className": "page-base-style"
+  },
+  "lifeCycles": {
+    "setup": {
+      "type": "JSFunction",
+      "value": "function setup({\n  props,\n  state,\n  watch,\n  onMounted\n}) {\n  console.log('[setup]');\r\n  return 0\r\n}"
+    },
+    "onBeforeMount": {
+      "type": "JSFunction",
+      "value": "function onBeforeMount() {\r\n  console.log('[onBeforeMount]')\r\n  return 0\r\n} "
+    },
+    "onMounted": {
+      "type": "JSFunction",
+      "value": "function onMounted() {\r\n    console.log('[onMounted]')\r\n    return 0\r\n} "
+    },
+    "onUpdated": {
+      "type": "JSFunction",
+      "value": "function onUpdated() {\r\n  console.log('[onUpdated]')\r\n} "
+    },
+    "onBeforeUpdate": {
+      "type": "JSFunction",
+      "value": "function onBeforeUpdate() { \r\n  console.log('onBeforeUpdate')\r\n} "
+    },
+    "onBeforeUnmount": {
+      "type": "JSFunction",
+      "value": "function onBeforeUnmount() { \r\n    console.log('onBeforeUnmounted')\r\n} "
+    },
+    "onUnmounted": {
+      "type": "JSFunction",
+      "value": "function onUnmounted() {\n  console.log('onUnmounted')\n\n }"
+    },
+    "onErrorCaptured": {
+      "type": "JSFunction",
+      "value": "function onErrorCaptured(err) {\r\n  console.error(err)\r\n  console.log('[onErrorCaptured]')\r\n  return false\r\n} "
+    },
+    "onActivated": {
+      "type": "JSFunction",
+      "value": "function onActivated() { \r\n  console.log('[onActivated]')\r\n} "
+    },
+    "onDeactivated": {
+      "type": "JSFunction",
+      "value": "function onDeactivated() { \r\n  console.log('[onDeactivated]')\r\n} "
+    }
+  },
+  "children": [
+    {
+      "componentName": "Text",
+      "props": {
+        "style": "display: inline-block;",
+        "text": {
+          "type": "JSExpression",
+          "value": "this.state.state2.str"
+        },
+        "className": "component-base-style"
+      },
+      "children": [],
+      "id": "55d2b251"
+    },
+    {
+      "componentName": "TinyButton",
+      "props": {
+        "text": {
+          "type": "JSExpression",
+          "value": "this.state.state1.button"
+        },
+        "className": "component-base-style",
+        "onClick": {
+          "type": "JSExpression",
+          "value": "this.onClickNew1"
+        }
+      },
+      "children": [],
+      "id": "45386344"
+    },
+    {
+      "componentName": "div",
+      "props": {
+        "className": "component-base-style"
+      },
+      "children": [
+        {
+          "componentName": "Text",
+          "props": {
+            "style": "display: inline-block;",
+            "text": {
+              "type": "JSExpression",
+              "value": "this.state.state2.str"
+            },
+            "className": "component-base-style"
+          },
+          "children": [],
+          "id": "63346222"
+        }
+      ],
+      "id": "622a8416"
+    }
+  ],
+  "dataSource": {
+    "list": []
+  },
+  "state": {
+    "state1": {
+      "button": 1
+    },
+    "state2": { "str": "text" }
+  },
+  "methods": {
+    "onClickNew1": {
+      "type": "JSFunction",
+      "value": "function onClickNew1(event) {\n  console.log('123456')\n  this.state.state1.button++\n  console.log(this.state.state1.button)\n}\n"
+    }
+  },
+  "utils": [],
+  "bridge": [],
+  "inputs": [],
+  "outputs": [],
+  "fileName": "Tone",
+  "id": "body"
+}
