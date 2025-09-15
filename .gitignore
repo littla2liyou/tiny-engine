@@ -7,6 +7,7 @@ pnpm-lock.yaml
 lerna-debug.log
 packages/design-core/bundle-deps
 designer-demo/bundle-deps
+MY_Document
 
 # local env files
 .env.local

@@ -17,6 +17,14 @@ export default defineConfig((configEnv) => {
     publicDir: path.resolve(__dirname, './public'),
     server: {
       port: 8090
+    },
+    resolve: {
+      alias: {
+        'xss/lib/index.js': 'xss'
+      }
+    },
+    optimizeDeps: {
+      include: ['xss', 'xss/lib/index.js', 'cssfilter']
     }
   }
 
