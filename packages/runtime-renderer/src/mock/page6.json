@@ -1,0 +1,102 @@
+{
+  "children": [
+    {
+      "componentName": "Group1Test2",
+      "props": {
+        "className": "block-base-style"
+      },
+      "componentType": "Block",
+      "children": [],
+      "id": "c4866555"
+    },
+    {
+      "componentName": "Group1Test1",
+      "props": {
+        "className": "block-base-style"
+      },
+      "componentType": "Block",
+      "children": [],
+      "id": "24622349"
+    }
+  ],
+  "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
+  "componentName": "Page",
+  "fileName": "Tfour",
+  "lifeCycles": {},
+  "meta": {
+    "app": 1,
+    "gmt_create": "2025-08-29 17:59:23",
+    "lastUpdatedBy": "1",
+    "creator": "1",
+    "rootElement": false,
+    "contentBlocks": [],
+    "isHome": false,
+    "occupier": {
+      "id": "1",
+      "createdBy": "1",
+      "lastUpdatedBy": "1",
+      "tenantId": "1",
+      "siteId": "1",
+      "username": "开发者",
+      "email": "developer@lowcode.com",
+      "isAdmin": true,
+      "created_at": "2024-10-16 23:28:41",
+      "updated_at": "2024-10-16 23:28:41"
+    },
+    "gmt_modified": "2025-08-29 17:59:23",
+    "parentId": "0",
+    "occupierBy": "1",
+    "isDefault": false,
+    "router": "tfour",
+    "depth": 0,
+    "tenantId": "1",
+    "name": "Tfour",
+    "page_content": {
+      "componentName": "Page",
+      "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
+      "props": {
+        "className": "page-base-style"
+      },
+      "lifeCycles": {},
+      "children": [
+        {
+          "componentName": "Group1Test2",
+          "props": {
+            "className": "block-base-style"
+          },
+          "componentType": "Block",
+          "children": [],
+          "id": "c4866555"
+        },
+        {
+          "componentName": "Group1Test1",
+          "props": {
+            "className": "block-base-style"
+          },
+          "componentType": "Block",
+          "children": [],
+          "id": "24622349"
+        }
+      ],
+      "dataSource": {
+        "list": []
+      },
+      "state": {},
+      "methods": {},
+      "utils": [],
+      "bridge": [],
+      "inputs": [],
+      "outputs": [],
+      "fileName": "Tfour",
+      "id": "body"
+    },
+    "id": 6,
+    "isPage": true,
+    "group": "staticPages"
+  },
+  "methods": {},
+  "props": {
+    "className": "page-base-style"
+  },
+  "state": {}
+}
