@@ -1,0 +1,50 @@
+{
+  "name": "@opentiny/tiny-engine-runtime-renderer",
+  "version": "1.0.0",
+  "description": "TinyEngine Runtime Renderer Package",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "index.html"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:router": "vitest run src/router/__tests__",
+    "test:router:watch": "vitest src/router/__tests__",
+    "test:router:coverage": "vitest run src/router/__tests__ --coverage",
+    "test:router:simple": "vitest run src/router/__tests__/simple.test.ts"
+  },
+  "dependencies": {
+    "@opentiny/tiny-engine-builtin-component": "*",
+    "@opentiny/tiny-engine-i18n-host": "*",
+    "@opentiny/vue": "~3.20.0",
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.0",
+    "pinia": "^2.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.13",
+    "@opentiny/tiny-engine-builtin-component": "^2.6.0",
+    "@types/node": "^24.4.0",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitest/ui": "^1.0.0",
+    "@vue/babel-plugin-jsx": "^1.2.5",
+    "@vue/shared": "^3.3.4",
+    "@vue/test-utils": "^2.4.0",
+    "jsdom": "^23.0.0",
+    "typescript": "^5.9.2",
+    "vite": "^4.0.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@opentiny/tiny-engine-meta-register": "*"
+  }
+}
