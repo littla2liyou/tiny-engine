@@ -184,8 +184,15 @@ const _parseJSFunction = (data, scope, ctx) => {
   }
 }
 
-const _parseJSSlot = (data, scope) => {
-  return ($scope) => renderDefault(data.value, { ...scope, ...$scope }, data)
+const renderDefault = (
+  children: any[],
+  scope: Record<string, any>,
+  parent: any,
+  renderComponent: (schema: any, scope: Record<string, any>, parent: any) => any
+) => children.map?.((child) => renderComponent(child, scope, parent))
+
+const _parseJSSlot = (data, scope, renderComponent) => {
+  return ($scope) => renderDefault(data.value, { ...scope, ...$scope }, data, renderComponent)
 }
 
 const generateSlotGroup = (children, isCustomElm, schema) => {
@@ -211,7 +218,7 @@ const generateSlotGroup = (children, isCustomElm, schema) => {
   return slotGroup
 }
 
-const renderSlot = (children, scope, schema, isCustomElm, context) => {
+const renderSlot = (children, scope, schema, isCustomElm, context, renderComponent) => {
   if (children.some((a) => a.componentName === 'Template')) {
     const slotGroup = generateSlotGroup(children, isCustomElm, schema)
     const slots = {}
@@ -219,13 +226,13 @@ const renderSlot = (children, scope, schema, isCustomElm, context) => {
     Object.keys(slotGroup).forEach((slotName) => {
       const currentSlot = slotGroup[slotName]
 
-      slots[slotName] = ($scope) => renderDefault(currentSlot.value, { ...scope, ...$scope }, context)
+      slots[slotName] = ($scope) => renderDefault(currentSlot.value, { ...scope, ...$scope }, context, renderComponent)
     })
 
     return slots
   }
 
-  return { default: () => renderDefault(children, scope, context) }
+  return { default: () => renderDefault(children, scope, context, renderComponent) }
 }
 
 const _checkGroup = (componentName) => configure[componentName]?.nestingRule?.childWhitelist?.length
@@ -279,7 +286,7 @@ const injectPlaceHolder = (componentName, children) => {
   return children
 }
 
-const renderGroup = (children, scope, context) => {
+const renderGroup = (children, scope, context, renderComponent) => {
   return children.map?.((schema) => {
     const { componentName, children, loop, loopArgs, condition } = schema
     const loopList = parseData(loop, scope, context)
@@ -302,7 +309,7 @@ const renderGroup = (children, scope, context) => {
         getComponent(componentName),
         getBindProps(schema, mergeScope, context),
         Array.isArray(renderChildren)
-          ? renderSlot(renderChildren, mergeScope, schema, customElements[componentName], context)
+          ? renderSlot(renderChildren, mergeScope, schema, customElements[componentName], context, renderComponent)
           : parseData(renderChildren, mergeScope, context)
       )
 
@@ -313,7 +320,7 @@ const renderGroup = (children, scope, context) => {
   })
 }
 
-const getChildren = (schema, mergeScope, context) => {
+const getChildren = (schema, mergeScope, context, renderComponent) => {
   const { componentName, children } = schema
   const renderChildren = injectPlaceHolder(componentName, children)
 
@@ -328,10 +335,10 @@ const getChildren = (schema, mergeScope, context) => {
   const isCustomElm = customElements[componentName]
 
   if (directChildrenHasTemplate(renderChildren)) {
-    return renderSlot(renderChildren, mergeScope, schema, isCustomElm, context)
+    return renderSlot(renderChildren, mergeScope, schema, isCustomElm, context, renderComponent)
   }
 
-  return renderGroup(renderChildren, mergeScope, context)
+  return renderGroup(renderChildren, mergeScope, context, renderComponent)
 }
 
 function renderComponent(schema, scope, parent) {
@@ -362,7 +369,11 @@ function renderComponent(schema, scope, parent) {
       return null
     }
 
-    const Ele = h(component, getBindProps(schema, mergeScope, parent), getChildren(schema, mergeScope, parent))
+    const Ele = h(
+      component,
+      getBindProps(schema, mergeScope, parent),
+      getChildren(schema, mergeScope, parent, renderComponent)
+    )
 
     return Ele
   }
@@ -384,7 +395,7 @@ export const renderer = defineComponent({
     const context = inject('pageContext')
     const { scope, schema } = this
 
-    return renderComponent(schema, scope, context)
+    return renderComponent(schema, scope, context, renderComponent)
   }
 })
 
