@@ -13,6 +13,7 @@
 import { h, provide, nextTick, reactive, watchEffect, ref, type PropType } from 'vue'
 import Loading from './Loading.vue'
 import renderer, { parseData, setPageCss as enhancedSetPageCss, clearAllPageCSS } from './index'
+import { useState } from './page-function/state'
 import useContext from './useContext.ts'
 import { PageLifecycleWrapper } from './RuntimeLifecycle'
 
@@ -53,7 +54,7 @@ export default {
 
     const pageSchema = reactive<Schema>({})
     const methods: Record<string, any> = {}
-    const state = reactive<Record<string, any>>({})
+    const { state, setState } = useState({ getContext })
 
     // Add flag to track initialization
     let isSchemaInitialized = false
@@ -72,13 +73,12 @@ export default {
       setContext(methods)
     }
 
-    const setState = (data: Record<string, any>, clear?: boolean) => {
-      if (clear) reset(state)
+    // 增强 setState 以支持 pageSchema 状态保存
+    const enhancedSetState = (data: Record<string, any>, clear?: boolean) => {
       if (!pageSchema.state) {
         pageSchema.state = data
       }
-
-      Object.assign(state, parseData(data, {}, getContext()) || {})
+      setState(data, clear)
     }
 
     const setPageCss = (css = '') => {
@@ -103,7 +103,7 @@ export default {
       setMethods(newSchema.methods, true)
 
       // 这里setState（会触发画布渲染），是因为状态管理里面的变量会用到props、utils、bridge、stores、methods
-      setState(newSchema.state, true)
+      enhancedSetState(newSchema.state, true)
       await nextTick()
       setPageCss(data.css || '')
 

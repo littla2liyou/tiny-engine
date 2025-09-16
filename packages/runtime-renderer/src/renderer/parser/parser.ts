@@ -15,64 +15,94 @@ import { transformSync } from '@babel/core'
 import { Notify } from '@opentiny/vue'
 import i18nHost from '@opentiny/tiny-engine-i18n-host'
 
+// 获取全局工具函数
+const getGlobalUtils = () => {
+  const utils: Record<string, any> = {}
+
+  // 从 window.TinyUtils 获取工具函数
+  if (typeof window !== 'undefined' && (window as any).TinyUtils) {
+    Object.assign(utils, (window as any).TinyUtils)
+  }
+
+  // 从 window.pageMethods 获取页面方法
+  if (typeof window !== 'undefined' && (window as any).pageMethods) {
+    Object.assign(utils, (window as any).pageMethods)
+  }
+
+  // 直接获取常用的全局工具
+  if (typeof window !== 'undefined') {
+    // axios
+    if ((window as any).axios) utils.axios = (window as any).axios
+    // lodash
+    if ((window as any)._) utils._ = (window as any)._
+    // moment
+    if ((window as any).moment) utils.moment = (window as any).moment
+    // 其他常用工具
+    if ((window as any).$) utils.$ = (window as any).$
+    if ((window as any).jQuery) utils.jQuery = (window as any).jQuery
+  }
+
+  return utils
+}
+
 interface ITypeParserDef {
-  type: (data) => boolean
-  parseFunc: (data: unknown, scope: Record<string, any>, ctx: Record<string, any>) => unknown
+  type: (data: any) => boolean
+  parseFunc: (data: any, scope: Record<string, any>, ctx: Record<string, any>) => any
 }
 
 const parseList: Array<ITypeParserDef> = []
 
-const isI18nData = (data) => {
+const isI18nData = (data: any) => {
   return data && data.type === 'i18n'
 }
 
-const isJSSlot = (data) => {
+const isJSSlot = (data: any) => {
   return data && data.type === 'JSSlot'
 }
 
-const isJSExpression = (data) => {
+const isJSExpression = (data: any) => {
   return data && data.type === 'JSExpression'
 }
 
-const isJSFunction = (data) => {
+const isJSFunction = (data: any) => {
   return data && data.type === 'JSFunction'
 }
 
-const isJSResource = (data) => {
+const isJSResource = (data: any) => {
   return data && data.type === 'JSResource'
 }
 
-const isString = (data) => {
+const isString = (data: any) => {
   return typeof data === 'string'
 }
 
-const isArray = (data) => {
+const isArray = (data: any) => {
   return Array.isArray(data)
 }
 
-const isFunction = (data) => {
+const isFunction = (data: any) => {
   return typeof data === 'function'
 }
 
-const isIcon = (data) => {
+const isIcon = (data: any) => {
   return data?.componentName === 'Icon'
 }
 
-const isObject = (data) => {
+const isObject = (data: any) => {
   return typeof data === 'object'
 }
 
 // 判断是否是状态访问器
-export const isStateAccessor = (stateData) =>
+export const isStateAccessor = (stateData: any) =>
   stateData?.accessor?.getter?.type === 'JSFunction' || stateData?.accessor?.setter?.type === 'JSFunction'
 
 // 规避创建function eslint报错
-export const newFn = (...argv) => {
+export const newFn = (...argv: any[]) => {
   const Fn = Function
   return new Fn(...argv)
 }
 
-const transformJSX = (code) => {
+const transformJSX = (code: any) => {
   const res = transformSync(code, {
     plugins: [
       [
@@ -91,7 +121,7 @@ const transformJSX = (code) => {
     .trim()
 }
 
-const parseExpression = (data, scope, ctx, isJsx = false) => {
+const parseExpression = (data: any, scope: any, ctx: any, isJsx = false) => {
   try {
     if (data.value.indexOf('this.i18n') > -1) {
       ctx.i18n = i18nHost.global.t
@@ -100,11 +130,17 @@ const parseExpression = (data, scope, ctx, isJsx = false) => {
     }
 
     const expression = isJsx ? transformJSX(data.value) : data.value
-    return newFn('$scope', `with($scope || {}) { return ${expression} }`).call(ctx, {
+
+    // 注入工具函数到执行上下文
+    const enhancedCtx = {
       ...ctx,
       ...scope,
-      slotScope: scope
-    })
+      slotScope: scope,
+      // 注入全局工具函数
+      ...getGlobalUtils()
+    }
+
+    return newFn('$scope', `with($scope || {}) { return ${expression} }`).call(enhancedCtx, enhancedCtx)
   } catch (err) {
     // 解析抛出异常，则再尝试解析 JSX 语法。如果解析 JSX 语法仍然出现错误，isJsx 变量会确保不会再次递归执行解析
     if (!isJsx) {
@@ -114,7 +150,7 @@ const parseExpression = (data, scope, ctx, isJsx = false) => {
   }
 }
 
-const parseI18n = (i18n, scope, ctx) => {
+const parseI18n = (i18n: any, scope: any, ctx: any) => {
   return parseExpression(
     {
       type: 'JSExpression',
@@ -126,7 +162,7 @@ const parseI18n = (i18n, scope, ctx) => {
 }
 
 // 解析函数字符串结构
-const parseFunctionString = (fnStr) => {
+const parseFunctionString = (fnStr: any) => {
   const fnRegexp = /(async)?.*?(\w+) *\(([\s\S]*?)\) *\{([\s\S]*)\}/
   const result = fnRegexp.exec(fnStr)
   if (result) {
@@ -144,16 +180,20 @@ const parseFunctionString = (fnStr) => {
 }
 
 // 解析JSX字符串为可执行函数
-const parseJSXFunction = (data, _scope, ctx) => {
+const parseJSXFunction = (data: any, _scope: any, ctx: any) => {
   try {
     const newValue = transformJSX(data.value)
     const fnInfo = parseFunctionString(newValue)
     if (!fnInfo) throw Error('函数解析失败，请检查格式。示例：function fnName() { }')
 
-    return newFn(...fnInfo.params, fnInfo.body).bind({
+    // 增强上下文，注入工具函数
+    const enhancedCtx = {
       ...ctx,
+      ...getGlobalUtils(),
       getComponent: ctx.getComponent
-    })
+    }
+
+    return newFn(...fnInfo.params, fnInfo.body).bind(enhancedCtx)
   } catch (error) {
     Notify({
       type: 'warning',
@@ -165,8 +205,8 @@ const parseJSXFunction = (data, _scope, ctx) => {
   }
 }
 
-export const generateFn = (innerFn, context) => {
-  return (...args) => {
+export const generateFn = (innerFn: any, context: any) => {
+  return (...args: any[]) => {
     // 如果有数据源标识，则表格的fetchData返回数据源的静态数据
     const sourceId = context?.collectionMethodsMap?.[innerFn.realName || innerFn.name]
     if (sourceId) {
@@ -188,7 +228,7 @@ export const generateFn = (innerFn, context) => {
       // 这里注意如果innerFn返回的是一个promise则需要捕获异常，重新返回默认一条空数据
       if (result?.then) {
         result = new Promise((resolve) => {
-          result.then(resolve).catch((error) => {
+          result.then(resolve).catch((error: any) => {
             Notify({
               type: 'warning',
               title: '异步函数执行报错',
@@ -208,29 +248,35 @@ export const generateFn = (innerFn, context) => {
   }
 }
 
-const parseJSFunction = (data, _scope, ctx) => {
+const parseJSFunction = (data: any, _scope: any, ctx: any) => {
   try {
-    const innerFn = newFn(`return ${data.value}`).bind(ctx)()
-    return generateFn(innerFn, ctx)
+    // 增强上下文，注入工具函数
+    const enhancedCtx = {
+      ...ctx,
+      ...getGlobalUtils()
+    }
+
+    const innerFn = newFn(`return ${data.value}`).bind(enhancedCtx)()
+    return generateFn(innerFn, enhancedCtx)
   } catch (error) {
     return parseJSXFunction(data, null, ctx)
   }
 }
 
-const parseJSSlot = (_data, _scope, _ctx) => {
-  return (_$scope) => {
+const parseJSSlot = (_data: any, _scope: any, _ctx: any) => {
+  return (_$scope: any) => {
     // 这里需要导入 renderDefault，但由于循环依赖问题，暂时返回空函数
     // 实际使用时会在 render.ts 中处理
     return []
   }
 }
 
-export function parseData(data, scope, ctx) {
+export function parseData(data: any, scope: any, ctx: any) {
   const typeParser = parseList.find((item) => item.type(data))
   return typeParser ? typeParser.parseFunc(data, scope, ctx) : data
 }
 
-export const parseCondition = (condition, scope, ctx) => {
+export const parseCondition = (condition: any, scope: any, ctx: any) => {
   // eslint-disable-next-line no-eq-null
   return condition == null ? true : parseData(condition, scope, ctx)
 }
@@ -244,17 +290,17 @@ export const parseLoopArgs = (loop?: { item: unknown; index: number; loopArgs?: 
   return newFn('item,index', body)(item, index)
 }
 
-const getIcon = (name) => window.TinyVueIcon?.[name]?.() || ''
+const getIcon = (name: any) => (window as any).TinyVueIcon?.[name]?.() || ''
 
-const parseIcon = (data, _scope, _ctx) => {
+const parseIcon = (data: any, _scope: any, _ctx: any) => {
   return getIcon(data.props.name)
 }
 
-const parseStateAccessor = (data, _scope, ctx) => {
+const parseStateAccessor = (data: any, _scope: any, ctx: any) => {
   return parseData(data.defaultValue, null, ctx)
 }
 
-const parseObjectData = (data, scope, ctx) => {
+const parseObjectData = (data: any, scope: any, ctx: any) => {
   if (!data) {
     return data
   }
@@ -269,7 +315,7 @@ const parseObjectData = (data, scope, ctx) => {
     return getIcon(data.props.name)
   }
 
-  const res = {}
+  const res: any = {}
   Object.entries(data).forEach(([key, value]: [string, any]) => {
     // 如果是插槽则需要进行特殊处理
     if (key === 'slot' && value?.name) {
@@ -291,7 +337,7 @@ const parseObjectData = (data, scope, ctx) => {
     res[`onUpdate:${modelValue?.[0]}`] = parseData(
       {
         type: 'JSFunction',
-        value: `(value) => ${modelValue[1].value}=value`
+        value: `(value) => ${(modelValue[1] as any).value}=value`
       },
       scope,
       ctx
@@ -301,15 +347,15 @@ const parseObjectData = (data, scope, ctx) => {
   return res
 }
 
-const parseString = (data) => {
+const parseString = (data: any) => {
   return data.trim()
 }
 
-const parseArray = (data, scope, ctx) => {
-  return data.map((item) => parseData(item, scope, ctx))
+const parseArray = (data: any, scope: any, ctx: any) => {
+  return data.map((item: any) => parseData(item, scope, ctx))
 }
 
-const parseFunction = (data, scope, ctx) => {
+const parseFunction = (data: any, _scope: any, ctx: any) => {
   return data.bind(ctx)
 }
 
