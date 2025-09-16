@@ -52,7 +52,7 @@ const Mapper = {
   CanvasSection,
   CanvasPlaceholder,
   CanvasRouterLink,
-  CanvasRouterView
+  RouterView: CanvasRouterView
 }
 
 export const collectionMethodsMap = {}
@@ -61,8 +61,55 @@ const getNative = (name) => {
   return TinyVue?.[name]
 }
 
+const getBlock = (name) => {
+  return window.blocks?.[name]
+}
+
 export const getComponent = (name) => {
-  return Mapper[name] || getNative(name) || customElements[name] || (isHTMLTag(name) ? name : null)
+  // 首先尝试从映射表、原生组件、自定义元素中获取
+  const component = Mapper[name] || getNative(name) || customElements[name]
+  if (component) {
+    return component
+  }
+
+  // 如果是 HTML 标签，直接返回
+  if (isHTMLTag(name)) {
+    return name
+  }
+
+  // 检查是否是区块组件
+  const blockSchema = getBlock(name)
+  if (blockSchema) {
+    // 返回一个动态组件，用于渲染区块
+    return defineComponent({
+      name: `Block_${name}`,
+      props: {
+        schema: Object
+      },
+      setup(props) {
+        return () => {
+          // 区块的真实内容在 window.blocks 中，而不是页面的 schema 中
+          // 页面的 schema 只是区块的引用，children 为空
+          const blockContent = blockSchema.schema
+
+          // eslint-disable-next-line no-console
+          console.log(`区块 ${name} 渲染:`, {
+            hasPropsSchema: !!props.schema,
+            hasBlockSchema: !!blockSchema.schema,
+            blockContent,
+            children: blockContent?.children,
+            childrenLength: blockContent?.children?.length
+          })
+
+          // 递归渲染区块的 children
+          // eslint-disable-next-line
+          return renderGroup(blockContent.children, {}, {}, renderComponent)
+        }
+      }
+    })
+  }
+
+  return null
 }
 
 const configure = {}
@@ -251,6 +298,12 @@ const getBindProps = (schema, scope, context) => {
   }
 
   if (Mapper[componentName]) {
+    bindProps.schema = schema
+  }
+
+  // 如果是区块组件，传递完整的 schema
+  const blockSchema = getBlock(componentName)
+  if (blockSchema) {
     bindProps.schema = schema
   }
 
