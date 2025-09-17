@@ -9,8 +9,9 @@ import type {
   BlockItem,
   BlockContent
 } from '../types/schema'
-import appSchemaMock from '../mock/appSchema.json'
+import appSchemaMock from '../mock/appSchema1.json'
 import blocksMock from '../mock/blocks.json'
+import { appFunctionManager } from '../utils/AppFunctionManager'
 
 export function useAppSchema() {
   const appSchema = ref<AppSchema | null>(null)
@@ -56,16 +57,49 @@ export function useAppSchema() {
     })
   }
 
+  // 将工具函数暴露给页面方法
+  const exposeUtilsToPageMethods = (utils: UtilFunction[]) => {
+    // 创建全局页面方法对象
+    if (!window.pageMethods) {
+      window.pageMethods = {}
+    }
+
+    utils.forEach((util) => {
+      if (util.type === 'function') {
+        // 将自定义函数添加到页面方法中
+        window.pageMethods[util.name] = (window as any)[util.name]
+      } else if (util.type === 'npm') {
+        // 将 npm 包添加到页面方法中
+        const pkg = (util as any).content?.package
+        const exportName = (util as any).content?.exportName
+        if (pkg && exportName) {
+          window.pageMethods[exportName] = (window as any)[exportName]
+        }
+      }
+    })
+
+    // eslint-disable-next-line no-console
+    console.log('页面方法已更新:', Object.keys(window.pageMethods))
+  }
+
   // 初始化工具函数
-  const initializeUtils = (utils: UtilFunction[]) => {
+  const initializeUtils = async (utils: UtilFunction[]) => {
     // eslint-disable-next-line no-console
     console.log('初始化工具函数:', utils.length, '个函数')
 
-    utils.forEach((util) => {
+    try {
+      // 使用工具函数管理器初始化所有工具
+      await appFunctionManager.initializeUtils(utils as any)
+
+      // 将工具函数暴露给页面方法
+      exposeUtilsToPageMethods(utils)
+
       // eslint-disable-next-line no-console
-      console.log(`工具函数: ${util.name}`)
-      // 这里会注册全局工具函数
-    })
+      console.log('工具函数初始化完成')
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('工具函数初始化失败:', error)
+    }
   }
 
   // 初始化包依赖
@@ -85,7 +119,7 @@ export function useAppSchema() {
     if (!css) return
 
     // eslint-disable-next-line no-console
-    console.log('注入全局CSS')
+    console.log('注入全局CSS：{ css.length } 字符')
     // 创建style标签并注入CSS
     const style = document.createElement('style')
     style.textContent = css
@@ -241,7 +275,7 @@ export function useAppSchema() {
 
     return pages.value.map((page) => ({
       path: `/${page.meta.router}`,
-      name: `page_${page.meta.id}`,
+      name: `${page.meta.id}`,
       // 注意：这里不直接导入组件，而是在 router/index.ts 中处理
       component: 'PageRenderer', // 使用字符串标识，实际组件在路由创建时指定
       meta: {
