@@ -1,6 +1,7 @@
 <template>
   <a
     href="javascript:void(0)"
+    @click="handleClick"
     :data-router-target-page-id="to?.name"
     :class="{
       [activeClass]: active,
@@ -10,8 +11,11 @@
     <slot :href="to" :isActive="active" :isExactActive="exactActive"></slot>
   </a>
 </template>
+
 <script lang="ts">
-import { computed, inject, PropType, Ref } from 'vue'
+import { computed, PropType } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
 export default {
   props: {
     activeClass: {
@@ -23,33 +27,57 @@ export default {
       default: ''
     },
     to: {
-      // TODO: 支持绝对路径，类型为String
-      type: Object as PropType<{
-        name: string
-      }>
+      type: [String, Object] as PropType<
+        | string
+        | {
+            name: string
+            params?: Record<string, any>
+            query?: Record<string, any>
+          }
+      >
     }
   },
   setup(props) {
-    const pageAncestor = (inject('page-ancestors') as Ref<string[] | null>).value
+    const router = useRouter()
+    const route = useRoute()
+
+    const handleClick = (event: Event) => {
+      event.preventDefault()
+      if (props?.to) {
+        router.push(props.to)
+      }
+    }
+
     const active = computed(() => {
-      if (!Array.isArray(pageAncestor) || !props.to?.name) {
+      if (!props.to) return false
+
+      try {
+        const resolved = typeof props.to === 'string' ? router.resolve({ path: props.to }) : router.resolve(props.to)
+
+        // 检查是否为当前路由或其父路由
+        return route.matched.some((matchedRoute) => matchedRoute.name === resolved.name)
+      } catch {
         return false
       }
-
-      return pageAncestor.includes(props.to.name)
     })
 
     const exactActive = computed(() => {
-      if (!Array.isArray(pageAncestor) || !props.to?.name) {
+      if (!props.to) return false
+
+      try {
+        const resolved = typeof props.to === 'string' ? router.resolve({ path: props.to }) : router.resolve(props.to)
+
+        // 精确匹配当前路由
+        return route.name === resolved.name
+      } catch {
         return false
       }
-
-      return props.to.name === pageAncestor[pageAncestor.length - 1]
     })
 
     return {
       active,
-      exactActive
+      exactActive,
+      handleClick
     }
   }
 }
