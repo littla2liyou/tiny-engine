@@ -51,7 +51,7 @@ const Mapper = {
   CanvasFlexBox,
   CanvasSection,
   CanvasPlaceholder,
-  CanvasRouterLink,
+  RouterLink: CanvasRouterLink,
   RouterView: CanvasRouterView
 }
 
@@ -82,7 +82,7 @@ export const getComponent = (name) => {
   if (blockSchema) {
     // 返回一个动态组件，用于渲染区块
     return defineComponent({
-      name: `Block_${name}`,
+      name: `${name}`,
       props: {
         schema: Object
       },
@@ -109,7 +109,7 @@ export const getComponent = (name) => {
     })
   }
 
-  return null
+  return CanvasPlaceholder
 }
 
 const configure = {}
