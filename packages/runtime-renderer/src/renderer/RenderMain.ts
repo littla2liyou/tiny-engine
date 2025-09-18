@@ -10,12 +10,13 @@
  *
  */
 
-import { h, provide, nextTick, reactive, watchEffect, ref, type PropType } from 'vue'
-import Loading from './Loading.vue'
+import { h, provide, nextTick, reactive, watchEffect, ref, type PropType, defineComponent } from 'vue'
+import Loading from '../components/Loading.vue'
 import renderer, { parseData, setPageCss as enhancedSetPageCss, clearAllPageCSS } from './index'
 import { useState } from './page-function/state'
 import useContext from './useContext.ts'
 import { PageLifecycleWrapper } from './RuntimeLifecycle'
+import { useRouter, useRoute } from 'vue-router'
 
 interface Schema {
   children?: any[]
@@ -37,7 +38,8 @@ interface Props {
   schema: Schema
 }
 
-export default {
+export default defineComponent({
+  name: 'RenderMain',
   props: {
     schema: {
       type: Object as PropType<Schema>,
@@ -45,6 +47,8 @@ export default {
     }
   },
   setup(props: Props) {
+    const route = useRoute()
+    const router = useRouter()
     const { context, setContext, getContext } = useContext()
     const reset = (obj: Record<string, any>) => {
       Object.keys(obj).forEach((key) => delete obj[key])
@@ -94,7 +98,9 @@ export default {
       const newSchema = JSON.parse(JSON.stringify(data))
 
       const context = {
-        state
+        state,
+        route,
+        router
       }
       // 此处提升很重要，因为setState、initProps也会触发画布重新渲染，所以需要提升上下文环境的设置时间
       setContext(context, true)
@@ -152,10 +158,10 @@ export default {
     return pageSchema.children?.length
       ? h(PageLifecycleWrapper, {
           schema: rootChildrenSchema,
-          lifeCycles: pageSchema.lifeCycles,
+          lifeCycles: pageSchema.lifeCycles || {},
           refreshKey: refreshKey.value,
           renderContent: (_state) => h(renderer, { schema: rootChildrenSchema, parent: pageSchema })
         })
       : [h(Loading)]
   }
-}
+})
