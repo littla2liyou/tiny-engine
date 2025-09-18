@@ -898,14 +898,28 @@
           {
             "componentName": "TinyButton",
             "props": {
-              "text": {
+              "className": "component-base-style",
+              "text": "路由至tzero",
+              "onClick": {
                 "type": "JSExpression",
-                "value": "this.stores.ttest1.button"
-              },
-              "className": "component-base-style"
+                "value": "this.onClickNew"
+              }
             },
             "children": [],
             "id": "45324446"
+          },
+          {
+            "componentName": "TinyButton",
+            "props": {
+              "className": "component-base-style",
+              "text": "打印route",
+              "onClick": {
+                "type": "JSExpression",
+                "value": "this.onClickNew1"
+              }
+            },
+            "children": [],
+            "id": "34357563"
           }
         ],
         "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
@@ -955,14 +969,28 @@
               {
                 "componentName": "TinyButton",
                 "props": {
-                  "text": {
+                  "className": "component-base-style",
+                  "text": "路由至tzero",
+                  "onClick": {
                     "type": "JSExpression",
-                    "value": "this.stores.ttest1.button"
-                  },
-                  "className": "component-base-style"
+                    "value": "this.onClickNew"
+                  }
                 },
                 "children": [],
                 "id": "45324446"
+              },
+              {
+                "componentName": "TinyButton",
+                "props": {
+                  "className": "component-base-style",
+                  "text": "打印route",
+                  "onClick": {
+                    "type": "JSExpression",
+                    "value": "this.onClickNew1"
+                  }
+                },
+                "children": [],
+                "id": "34357563"
               }
             ],
             "dataSource": {
@@ -976,7 +1004,11 @@
             "methods": {
               "onClickNew": {
                 "type": "JSFunction",
-                "value": "function onClickNew(event) {\n  console.log('123456')\n  this.stores.ttest1.button++\n  console.log(this.stores.ttest1.button)\n}\n"
+                "value": "function onClickNew(event) {\n  this.router.push('/tzero')\n}\n"
+              },
+              "onClickNew1": {
+                "type": "JSFunction",
+                "value": "function onClickNew1(event) {\n  console.log(this.router.currentRoute.fullPath)\n}\n"
               }
             },
             "utils": [],
@@ -993,7 +1025,11 @@
         "methods": {
           "onClickNew": {
             "type": "JSFunction",
-            "value": "function onClickNew(event) {\n  console.log('123456')\n  this.stores.ttest1.button++\n  console.log(this.stores.ttest1.button)\n}\n"
+            "value": "function onClickNew(event) {\n  this.router.push('/tzero')\n}\n"
+          },
+          "onClickNew1": {
+            "type": "JSFunction",
+            "value": "function onClickNew1(event) {\n  console.log(this.route.fullPath)\n}\n"
           }
         },
         "props": {
