@@ -13,6 +13,7 @@ import type { RouteConfig } from '../types/config'
 import appSchemaMock from '../mock/appSchema1.json'
 import blocksMock from '../mock/blocks.json'
 import { appFunctionManager } from '../utils/AppFunctionManager'
+import PageRenderer from '../components/PageRenderer.vue'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
@@ -278,25 +279,30 @@ export function useAppSchema() {
 
     // 遍历页面列表生成路由配置
     pages.value.forEach((page) => {
+      const isChildRoute = page.meta.parentId !== '0'
+
       const routeConfigCurrent = {
-        path: `/${page.meta.router}`,
+        path: isChildRoute ? page.meta.router : `/${page.meta.router}`,
         name: `${page.meta.id}`,
+        component: PageRenderer,
         children: [],
         meta: {
           pageId: page.meta.id,
           pageName: page.meta.name,
           isHome: page.meta.isHome,
-          depth: page.meta.depth,
+          hasChildren: (page.children && page.children.length > 0) || false,
+          depth: page.meta.depth, // 疑问：此属性和面包屑有关吗？
           pageSchema: page.meta.page_content
         }
       }
 
-      if (page.meta.parentId !== '0') {
+      if (isChildRoute) {
         const parentId = parseInt(page.meta.parentId)
         const parentRoute = routesConfig.find((r) => r.meta?.pageId === parentId)
         if (parentRoute) {
           parentRoute.children = parentRoute.children || []
           parentRoute.children.push(routeConfigCurrent)
+          parentRoute.meta.hasChildren = true
           return
         }
       } else {
