@@ -18,10 +18,12 @@ async function createRouterConfig() {
       path: `${page.path}`,
       name: `${page.name}`,
       component: PageRenderer,
+      children: page.children || [],
       meta: {
         pageId: page.meta.pageId,
         pageName: page.meta.pageName,
         isHome: page.meta.isHome,
+        hasChildren: (page.children && page.children.length > 0) || false,
         pageSchema: page.meta.pageSchema,
         depth: page.meta.depth
       }

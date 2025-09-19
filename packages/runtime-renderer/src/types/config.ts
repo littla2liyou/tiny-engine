@@ -7,6 +7,7 @@ export interface RouteConfig {
   meta: {
     pageId: number
     pageName: string
+    hasChildren: boolean
     isHome: boolean
     depth: number
     pageSchema: PageSchema
