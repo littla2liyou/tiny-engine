@@ -1,7 +1,7 @@
 <template>
-  <canvas-placeholder placeholder="路由子页面显示位置占位符" :data-te-page-id="pageId"></canvas-placeholder>
+  <router-view />
 </template>
-<script lang="ts">
+<!-- <script lang="ts">
 import { inject } from 'vue'
 import CanvasPlaceholder from './CanvasPlaceholder.vue'
 export default {
@@ -22,4 +22,4 @@ export default {
     return { pageId }
   }
 }
-</script>
+</script> -->

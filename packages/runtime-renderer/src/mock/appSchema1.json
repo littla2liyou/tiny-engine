@@ -2469,6 +2469,14 @@
               }
             ],
             "id": "4267e3f2"
+          },
+          {
+            "componentName": "RouterView",
+            "props": {
+              "className": "component-base-style"
+            },
+            "children": [],
+            "id": "42524344"
           }
         ],
         "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
@@ -2599,6 +2607,14 @@
                   }
                 ],
                 "id": "4267e3f2"
+              },
+              {
+                "componentName": "RouterView",
+                "props": {
+                  "className": "component-base-style"
+                },
+                "children": [],
+                "id": "42524344"
               }
             ],
             "dataSource": {
