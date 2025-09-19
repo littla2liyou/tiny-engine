@@ -30,19 +30,7 @@
 
       <!-- 操作按钮 -->
       <div class="not-found-actions">
-        <button @click="goHome" class="action-button primary">返回首页</button>
-        <button @click="goBack" class="action-button secondary">返回上页</button>
         <button @click="refresh" class="action-button secondary">刷新页面</button>
-      </div>
-
-      <!-- 可用页面列表 -->
-      <div v-if="availablePages.length > 0" class="available-pages">
-        <h3>可用页面</h3>
-        <div class="page-list">
-          <button v-for="page in availablePages" :key="page.id" @click="navigateToPage(page.route)" class="page-link">
-            {{ page.name }}
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -51,32 +39,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAppSchema } from '../composables/useAppSchema'
 
 // 路由和工具
 const route = useRoute()
-const { navigateToRoute, goBack, availableRoutes } = useAppRouter()
-const { defaultPage } = useAppSchema()
 
 // 计算属性
 const currentPath = computed(() => route.path)
-
-const availablePages = computed(() => {
-  return availableRoutes.value.slice(0, 6) // 只显示前6个页面
-})
-
-// 方法
-const goHome = () => {
-  if (defaultPage.value) {
-    navigateToRoute(defaultPage.value.meta.router)
-  } else {
-    navigateToRoute('')
-  }
-}
-
-const navigateToPage = (routeName: string) => {
-  navigateToRoute(routeName)
-}
 
 const refresh = () => {
   window.location.reload()

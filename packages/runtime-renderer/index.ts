@@ -11,11 +11,12 @@
  */
 
 import { createApp } from 'vue'
-import router from './src/router'
+import { createAppRouter } from './src/router'
 import App from './src/App.vue'
 
 // 初始化运行时渲染器
-export const initRuntimeRenderer = () => {
+export const initRuntimeRenderer = async () => {
+  const router = await createAppRouter()
   const app = createApp(App)
   app.use(router).mount('#app')
 

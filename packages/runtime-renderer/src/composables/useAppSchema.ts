@@ -1,4 +1,4 @@
-import { ref, computed, readonly } from 'vue'
+import { ref, computed, readonly, reactive } from 'vue'
 import type {
   AppSchema,
   ComponentMap,
@@ -9,15 +9,16 @@ import type {
   BlockItem,
   BlockContent
 } from '../types/schema'
+import type { RouteConfig } from '../types/config'
 import appSchemaMock from '../mock/appSchema1.json'
 import blocksMock from '../mock/blocks.json'
 import { appFunctionManager } from '../utils/AppFunctionManager'
 
-export function useAppSchema() {
-  const appSchema = ref<AppSchema | null>(null)
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
+const appSchema = ref<AppSchema | null>(null)
+const isLoading = ref(false)
+const error = ref<string | null>(null)
 
+export function useAppSchema() {
   // 初始化组件映射表
   const initializeComponentsMap = (componentsMap: ComponentMap[]) => {
     // eslint-disable-next-line no-console
@@ -270,28 +271,40 @@ export function useAppSchema() {
   })
 
   // 生成路由配置
-  const generateRoutes = () => {
+  const generateRoutesConfig = () => {
     if (!pages.value) return []
 
-    return pages.value.map((page) => ({
-      path: `/${page.meta.router}`,
-      name: `${page.meta.id}`,
-      // 注意：这里不直接导入组件，而是在 router/index.ts 中处理
-      component: 'PageRenderer', // 使用字符串标识，实际组件在路由创建时指定
-      meta: {
-        pageId: page.meta.id,
-        pageName: page.meta.name,
-        isHome: page.meta.isHome,
-        pageSchema: page,
-        // 添加页面元信息
-        pageMeta: {
-          app: page.meta.app,
-          creator: page.meta.creator,
-          group: page.meta.group,
-          depth: page.meta.depth
+    const routesConfig = reactive<RouteConfig[]>([])
+
+    // 遍历页面列表生成路由配置
+    pages.value.forEach((page) => {
+      const routeConfigCurrent = {
+        path: `/${page.meta.router}`,
+        name: `${page.meta.id}`,
+        children: [],
+        meta: {
+          pageId: page.meta.id,
+          pageName: page.meta.name,
+          isHome: page.meta.isHome,
+          depth: page.meta.depth,
+          pageSchema: page.meta.page_content
         }
       }
-    }))
+
+      if (page.meta.parentId !== '0') {
+        const parentId = parseInt(page.meta.parentId)
+        const parentRoute = routesConfig.find((r) => r.meta?.pageId === parentId)
+        if (parentRoute) {
+          parentRoute.children = parentRoute.children || []
+          parentRoute.children.push(routeConfigCurrent)
+          return
+        }
+      } else {
+        routesConfig.push(routeConfigCurrent)
+      }
+    })
+
+    return routesConfig
   }
 
   // 检查应用是否已加载
@@ -322,7 +335,7 @@ export function useAppSchema() {
     fetchBlocks,
     getPageByRoute,
     getPageById,
-    generateRoutes,
+    generateRoutesConfig,
 
     // 初始化方法
     initializeAppConfig,
