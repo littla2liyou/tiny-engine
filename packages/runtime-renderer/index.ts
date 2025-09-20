@@ -12,13 +12,26 @@
 
 import { createApp } from 'vue'
 import { createAppRouter } from './src/router'
+import { createPinia } from 'pinia'
+import { createStores } from './src/stores'
+import { useAppSchema } from './src/composables/useAppSchema'
 import App from './src/App.vue'
 
 // 初始化运行时渲染器
 export const initRuntimeRenderer = async () => {
   const router = await createAppRouter()
-  const app = createApp(App)
-  app.use(router).mount('#app')
 
+  const { generateStoresConfig } = useAppSchema()
+  const pinia = createPinia()
+  const storesConfig = generateStoresConfig()
+  const stores = createStores(storesConfig, pinia)
+
+  const app = createApp(App)
+  app.use(pinia).use(router).mount('#app')
+
+  app.provide('stores', stores)
+  if (typeof window !== 'undefined') {
+    window.__TINY_ENGINE_STORES__ = stores
+  }
   return app
 }

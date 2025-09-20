@@ -10,7 +10,7 @@
  *
  */
 
-import { h, provide, nextTick, reactive, watchEffect, ref, type PropType, defineComponent } from 'vue'
+import { h, provide, nextTick, reactive, watchEffect, ref, type PropType, defineComponent, inject } from 'vue'
 import Loading from '../components/Loading.vue'
 import renderer, { parseData, setPageCss, clearAllPageCSS } from './index'
 import { useState } from './page-function/state'
@@ -53,7 +53,7 @@ export default defineComponent({
     const reset = (obj: Record<string, any>) => {
       Object.keys(obj).forEach((key) => delete obj[key])
     }
-
+    const stores = inject('stores')
     provide('pageContext', context)
 
     const pageSchema = reactive<Schema>({})
@@ -87,7 +87,8 @@ export default defineComponent({
       const context = {
         state,
         route,
-        router
+        router,
+        stores
       }
       // 此处提升很重要，因为setState、initProps也会触发画布重新渲染，所以需要提升上下文环境的设置时间
       setContext(context, true)

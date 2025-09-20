@@ -14,6 +14,7 @@ import appSchemaMock from '../mock/appSchema1.json'
 import blocksMock from '../mock/blocks.json'
 import { appFunctionManager } from '../utils/AppFunctionManager'
 import PageRenderer from '../components/PageRenderer.vue'
+import { parseData } from '../renderer'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
@@ -271,6 +272,26 @@ export function useAppSchema() {
     return appSchema.value?.data?.packages || []
   })
 
+  const generateStoresConfig = () => {
+    if (globalStates.value.length === 0) return []
+    return globalStates.value.map((store) => ({
+      id: store.id,
+      state: store.state,
+      actions: Object.fromEntries(
+        Object.keys(store.actions || {}).map((key) => {
+          // 使用 parseData 将每个 JSFunction 转换为真正的函数
+          return [key, parseData(store.actions[key], {}, store.state)]
+        })
+      ),
+      getters: Object.fromEntries(
+        Object.keys(store.getters || {}).map((key) => {
+          // 同样处理 getters
+          return [key, parseData(store.getters[key], {}, store.state)]
+        })
+      )
+    }))
+  }
+
   // 生成路由配置
   const generateRoutesConfig = () => {
     if (!pages.value) return []
@@ -342,6 +363,7 @@ export function useAppSchema() {
     getPageByRoute,
     getPageById,
     generateRoutesConfig,
+    generateStoresConfig,
 
     // 初始化方法
     initializeAppConfig,
