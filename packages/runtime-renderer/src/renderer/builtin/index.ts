@@ -28,4 +28,5 @@ export {
   CanvasPlaceholder,
   CanvasRouterLink,
   CanvasRouterView
+  //  CanvasCollection
 }
