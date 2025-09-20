@@ -13,3 +13,10 @@ export interface RouteConfig {
     pageSchema: PageSchema
   }
 }
+
+export interface StoreConfig {
+  id: string
+  state: Record<string, any>
+  actions: Record<string, any>
+  getters: Record<string, any>
+}

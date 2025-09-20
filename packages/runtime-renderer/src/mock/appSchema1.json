@@ -3220,6 +3220,22 @@
                 },
                 "children": [],
                 "id": "36141245"
+              },
+              {
+                "componentName": "TinyButton",
+                "props": {
+                  "text": {
+                    "type": "JSExpression",
+                    "value": "this.state.state1.deep.deepButton"
+                  },
+                  "className": "component-base-style",
+                  "onClick": {
+                    "type": "JSExpression",
+                    "value": "this.onClickNew2"
+                  }
+                },
+                "children": [],
+                "id": "612645a7"
               }
             ],
             "id": "4355544e"
@@ -3697,6 +3713,22 @@
                     },
                     "children": [],
                     "id": "36141245"
+                  },
+                  {
+                    "componentName": "TinyButton",
+                    "props": {
+                      "text": {
+                        "type": "JSExpression",
+                        "value": "this.state.state1.deep.deepButton"
+                      },
+                      "className": "component-base-style",
+                      "onClick": {
+                        "type": "JSExpression",
+                        "value": "this.onClickNew2"
+                      }
+                    },
+                    "children": [],
+                    "id": "612645a7"
                   }
                 ],
                 "id": "4355544e"
@@ -3999,7 +4031,10 @@
                   "len1": "",
                   "len2": "",
                   "button": 1,
-                  "switch": true
+                  "switch": true,
+                  "deep": {
+                    "deepButton": 1
+                  }
                 },
                 "accessor": {
                   "getter": {
@@ -4043,6 +4078,10 @@
               "onClickNew1": {
                 "type": "JSFunction",
                 "value": "function onClickNew1(event) {\n  throw Error('模拟错误测试')\n}\n"
+              },
+              "onClickNew2": {
+                "type": "JSFunction",
+                "value": "function onClickNew2(event) {\n  this.state.state1.deep.deepButton++\n  console.log('onClickNew2执行')\n}\n"
               }
             },
             "utils": [],
@@ -4072,6 +4111,10 @@
           "onClickNew1": {
             "type": "JSFunction",
             "value": "function onClickNew1(event) {\n  throw Error('模拟错误测试')\n}\n"
+          },
+          "onClickNew2": {
+            "type": "JSFunction",
+            "value": "function onClickNew2(event) {\n  this.state.state1.deep.deepButton++\n  console.log('onClickNew2执行')\n}\n"
           }
         },
         "props": {
@@ -4086,7 +4129,10 @@
               "len1": "",
               "len2": "",
               "button": 1,
-              "switch": true
+              "switch": true,
+              "deep": {
+                "deepButton": 1
+              }
             },
             "accessor": {
               "getter": {
@@ -4155,7 +4201,7 @@
           "gmt_modified": "2025-09-16 14:39:19",
           "parentId": "8",
           "occupierBy": "1",
-          "isDefault": false,
+          "isDefault": true,
           "router": "fivea",
           "depth": 0,
           "tenantId": "1",
@@ -4626,7 +4672,11 @@
           "actions": {
             "increcement": {
               "type": "JSFunction",
-              "value": "function increcement() {\n  this.button++;\n  console.log('123456');\n}"
+              "value": "function increcement() {\n  this.button++;\n  console.log(this.button);\n  console.log('123456');\n}"
+            },
+            "consoleTest": {
+              "type": "JSFunction",
+              "value": "function consoleTest() {\n  this.button++;\n  console.log('!!!!consoleTest!!!!!');\n}"
             }
           }
         },

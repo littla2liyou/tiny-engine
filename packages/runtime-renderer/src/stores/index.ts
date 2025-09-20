@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import type { StoreConfig } from '../types/config'
 import type { Pinia } from 'pinia'
+import { reactive } from 'vue'
 
 // 存储已创建的 stores 实例
 const storeInstances = new Map<string, any>()
 
 export const createStores = (storesConfig: StoreConfig[], pinia: Pinia) => {
-  const stores: Record<string, any> = {}
+  const stores = reactive<Record<string, any>>({}) // 使用 reactive 包装 stores
 
   storesConfig.forEach((config) => {
     // 检查是否已经创建过该 store
