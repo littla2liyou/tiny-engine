@@ -13,8 +13,7 @@
 <script lang="ts">
 /* metaService: engine.toolbars.runtime-deploy.Main */
 import { runtimeDeploy } from '@opentiny/tiny-engine-common/js/runtime-deploy'
-import { useLayout, useNotify, getOptions } from '@opentiny/tiny-engine-meta-register'
-import meta from '../meta'
+import { useLayout, useNotify } from '@opentiny/tiny-engine-meta-register'
 import { ToolbarBase } from '@opentiny/tiny-engine-common'
 
 export default {
@@ -29,28 +28,7 @@ export default {
   },
   setup() {
     const deploy = async () => {
-      const { beforeDeploy, deployMethod, afterDeploy } = getOptions(meta.id)
-
-      try {
-        if (typeof beforeDeploy === 'function') {
-          await beforeDeploy()
-        }
-
-        if (typeof deployMethod === 'function') {
-          const stop = await deployMethod()
-
-          if (stop) {
-            return
-          }
-        }
-      } catch (error) {
-        useNotify({
-          type: 'error',
-          message: `Error in deploying: ${error}`
-        })
-      }
-
-      // 5. 检查页面状态 - 确保有内容可以部署
+      // 检查页面状态 - 确保有内容可以部署
       if (useLayout().isEmptyPage()) {
         useNotify({
           type: 'warning',
@@ -61,17 +39,6 @@ export default {
       }
 
       runtimeDeploy()
-
-      if (typeof afterDeploy === 'function') {
-        try {
-          await afterDeploy()
-        } catch (error) {
-          useNotify({
-            type: 'error',
-            message: `Error in afterDeploy: ${error}`
-          })
-        }
-      }
     }
 
     return {
