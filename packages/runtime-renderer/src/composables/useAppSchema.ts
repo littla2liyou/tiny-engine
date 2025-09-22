@@ -3,18 +3,17 @@ import type {
   AppSchema,
   ComponentMap,
   DataSourceConfig,
-  GlobalState,
   UtilFunction,
   PackageConfig,
   BlockItem,
   BlockContent
 } from '../types/schema'
 import type { RouteConfig } from '../types/config'
-import appSchemaMock from '../mock/appSchema1.json'
+import appSchemaMock from '../mock/appSchema.json'
 import blocksMock from '../mock/blocks.json'
 import { appFunctionManager } from '../utils/AppFunctionManager'
 import PageRenderer from '../components/PageRenderer.vue'
-import { parseData } from '../renderer'
+import { parseJSFunction } from '../utils/data-utils'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
@@ -45,18 +44,6 @@ export function useAppSchema() {
       // eslint-disable-next-line no-console
       console.log(`数据源: ${source.name} (${source.data.type})`)
       // 这里可以预加载数据源配置
-    })
-  }
-
-  // 初始化全局状态
-  const initializeGlobalStates = (globalStates: GlobalState[]) => {
-    // eslint-disable-next-line no-console
-    console.log('初始化全局状态:', globalStates.length, '个状态')
-
-    globalStates.forEach((state) => {
-      // eslint-disable-next-line no-console
-      console.log(`全局状态: ${state.id}`, state.state)
-      // 这里会创建Pinia stores
     })
   }
 
@@ -138,9 +125,6 @@ export function useAppSchema() {
 
     // 2. 初始化数据源
     initializeDataSources(schema.data.dataSource)
-
-    // 3. 初始化全局状态
-    initializeGlobalStates(schema.data.meta.globalState)
 
     // 4. 初始化工具函数
     initializeUtils(schema.data.utils)
@@ -267,6 +251,10 @@ export function useAppSchema() {
     return appSchema.value?.data?.utils || []
   })
 
+  const utilsFunctions = computed(() => {
+    return appSchema.value?.data?.utils?.filter((u) => u.type === 'function') || []
+  })
+
   // 获取包依赖
   const packages = computed(() => {
     return appSchema.value?.data?.packages || []
@@ -279,14 +267,14 @@ export function useAppSchema() {
       state: store.state,
       actions: Object.fromEntries(
         Object.keys(store.actions || {}).map((key) => {
-          // 使用 parseData 将每个 JSFunction 转换为真正的函数
-          return [key, parseData(store.actions[key], {}, store.state)]
+          // 使用 parseJSFunction ，但是上下文由pinia内部绑定
+          return [key, parseJSFunction(store.actions[key], {}, {})]
         })
       ),
       getters: Object.fromEntries(
         Object.keys(store.getters || {}).map((key) => {
           // 同样处理 getters
-          return [key, parseData(store.getters[key], {}, store.state)]
+          return [key, parseJSFunction(store.getters[key], {}, {})]
         })
       )
     }))
@@ -350,6 +338,7 @@ export function useAppSchema() {
     defaultPage,
     appConfig,
     appMeta,
+    utilsFunctions,
     componentsMap,
     dataSourceConfig,
     globalStates,
@@ -367,9 +356,8 @@ export function useAppSchema() {
 
     // 初始化方法
     initializeAppConfig,
-    initializeComponentsMap,
+    //initializeComponentsMap,
     initializeDataSources,
-    initializeGlobalStates,
     initializeUtils,
     initializePackages,
     injectGlobalCSS
