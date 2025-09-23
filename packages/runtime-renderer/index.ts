@@ -10,7 +10,7 @@
  *
  */
 
-import { createApp, reactive } from 'vue'
+import { createApp } from 'vue'
 import { createAppRouter } from './src/router'
 import { createPinia } from 'pinia'
 import { createStores } from './src/stores'
@@ -24,7 +24,7 @@ export const initRuntimeRenderer = async () => {
   const { generateStoresConfig } = useAppSchema()
   const pinia = createPinia()
   const storesConfig = generateStoresConfig()
-  const stores = reactive(createStores(storesConfig, pinia))
+  const stores = createStores(storesConfig)
 
   const app = createApp(App)
   app.use(pinia).use(router).mount('#app')

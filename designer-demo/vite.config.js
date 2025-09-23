@@ -15,17 +15,9 @@ export default defineConfig((configEnv) => {
   const customConfig = {
     envDir: './env',
     publicDir: path.resolve(__dirname, './public'),
-    server: {
-      port: 8090
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     },
-    resolve: {
-      alias: {
-        'xss/lib/index.js': 'xss'
-      }
-    },
-    optimizeDeps: {
-      include: ['xss', 'xss/lib/index.js', 'cssfilter']
-    }
   }
 
   return mergeConfig(baseConfig, customConfig)
