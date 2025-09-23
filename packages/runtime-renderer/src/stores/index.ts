@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { shallowReactive } from 'vue'
 import type { StoreConfig } from '../types/config'
+import type { Pinia } from 'pinia'
 
-export const createStores = (storesConfig: StoreConfig[]) => {
+export const createStores = (storesConfig: StoreConfig[], pinia: Pinia) => {
   const stores = shallowReactive<Record<string, any>>({})
 
   storesConfig.forEach((config) => {
@@ -15,7 +16,7 @@ export const createStores = (storesConfig: StoreConfig[]) => {
       actions: config.actions
     })
     // 使用useStore创建 store 实例并绑定到 pinia
-    stores[config.id] = useStore()
+    stores[config.id] = useStore(pinia)
   })
 
   return stores

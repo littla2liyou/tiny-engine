@@ -24,7 +24,7 @@ export const initRuntimeRenderer = async () => {
   const { generateStoresConfig } = useAppSchema()
   const pinia = createPinia()
   const storesConfig = generateStoresConfig()
-  const stores = createStores(storesConfig)
+  const stores = createStores(storesConfig, pinia)
 
   const app = createApp(App)
   app.use(pinia).use(router).mount('#app')
