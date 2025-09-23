@@ -264,7 +264,7 @@ export function useAppSchema() {
     if (globalStates.value.length === 0) return []
     return globalStates.value.map((store) => ({
       id: store.id,
-      state: () => JSON.parse(JSON.stringify(store.state)),
+      state: JSON.parse(JSON.stringify(store.state)),
       actions: Object.fromEntries(
         Object.keys(store.actions || {}).map((key) => {
           // 使用 parseJSFunction ，但是上下文由pinia内部绑定
