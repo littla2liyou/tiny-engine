@@ -1,16 +1,24 @@
-import type { PageSchema } from './schema'
+import type { RouteLocationRaw } from 'vue-router'
+
+export interface PageRendererProps {
+  pageId: number
+}
 
 export interface RouteConfig {
   path: string
   name: string
   children?: RouteConfig[]
+  props?: PageRendererProps
+  redirect?: RouteLocationRaw
   meta: {
     pageId: number
     pageName: string
     hasChildren: boolean
     isHome: boolean
     depth: number
-    pageSchema: PageSchema
+    isDefault: boolean
+    hasDefault: boolean
+    defaultPath: string
   }
 }
 

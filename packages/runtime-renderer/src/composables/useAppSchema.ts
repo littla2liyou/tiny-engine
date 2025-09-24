@@ -1,4 +1,4 @@
-import { ref, computed, readonly, reactive } from 'vue'
+import { ref, computed, readonly } from 'vue'
 import type {
   AppSchema,
   ComponentMap,
@@ -8,11 +8,9 @@ import type {
   BlockItem,
   BlockContent
 } from '../types/schema'
-import type { RouteConfig } from '../types/config'
 import appSchemaMock from '../mock/appSchema.json'
 import blocksMock from '../mock/blocks.json'
 // import { appFunctionManager } from '../utils/AppFunctionManager'
-import PageRenderer from '../components/PageRenderer.vue'
 import { parseJSFunction } from '../utils/data-utils'
 
 const appSchema = ref<AppSchema | null>(null)
@@ -280,49 +278,6 @@ export function useAppSchema() {
     }))
   }
 
-  // 生成路由配置
-  const generateRoutesConfig = () => {
-    if (!pages.value) return []
-
-    const routesConfig = reactive<RouteConfig[]>([])
-
-    // 遍历页面列表生成路由配置
-    pages.value.forEach((page) => {
-      const isChildRoute = page.meta.parentId !== '0'
-
-      const routeConfigCurrent = {
-        path: isChildRoute ? page.meta.router : `/${page.meta.router}`,
-        name: `${page.meta.id}`,
-        component: PageRenderer,
-        props: { pageId: page.meta.id }, // 静态对象，避免路由嵌套时被覆盖
-        children: [],
-        meta: {
-          pageId: page.meta.id,
-          pageName: page.meta.name,
-          isHome: page.meta.isHome,
-          hasChildren: (page.children && page.children.length > 0) || false,
-          depth: page.meta.depth, // 疑问：在嵌套路由中此属性没有改变，此属性和面包屑有关吗？
-          pageSchema: page.meta.page_content
-        }
-      }
-
-      if (isChildRoute) {
-        const parentId = parseInt(page.meta.parentId)
-        const parentRoute = routesConfig.find((r) => r.meta?.pageId === parentId)
-        if (parentRoute) {
-          parentRoute.children = parentRoute.children || []
-          parentRoute.children.push(routeConfigCurrent)
-          parentRoute.meta.hasChildren = true
-          return
-        }
-      } else {
-        routesConfig.push(routeConfigCurrent)
-      }
-    })
-
-    return routesConfig
-  }
-
   // 检查应用是否已加载
   const isAppLoaded = computed(() => {
     return !!appSchema.value
@@ -352,7 +307,6 @@ export function useAppSchema() {
     fetchBlocks,
     getPageByRoute,
     getPageById,
-    generateRoutesConfig,
     generateStoresConfig,
 
     // 初始化方法
