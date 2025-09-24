@@ -46,7 +46,18 @@ export interface PageSchema {
   componentName: string
   fileName: string
   lifeCycles?: LifeCycles | null
-  meta?: PageMeta
+  meta: PageMeta
+  methods: Record<string, JSFunction>
+  props: Record<string, any>
+  state: Record<string, any>
+}
+
+export interface PageContent {
+  children: ComponentNode[]
+  css: string
+  componentName: string
+  fileName: string
+  lifeCycles?: LifeCycles | null
   methods: Record<string, JSFunction>
   props: Record<string, any>
   state: Record<string, any>

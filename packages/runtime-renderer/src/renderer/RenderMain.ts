@@ -18,7 +18,7 @@ import useContext from './useContext.ts'
 import { PageLifecycleWrapper } from './RuntimeLifecycle'
 import { useRouter, useRoute } from 'vue-router'
 import { useAppSchema } from '../composables/useAppSchema'
-import type { PageSchema as Schema } from '../types/schema'
+import type { PageContent as Schema } from '../types/schema'
 
 interface Props {
   pageId: number
