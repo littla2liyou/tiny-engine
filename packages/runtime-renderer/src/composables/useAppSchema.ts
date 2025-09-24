@@ -11,7 +11,6 @@ import type {
 import appSchemaMock from '../mock/appSchema.json'
 import blocksMock from '../mock/blocks.json'
 // import { appFunctionManager } from '../utils/AppFunctionManager'
-import { parseJSFunction } from '../utils/data-utils'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
@@ -258,26 +257,6 @@ export function useAppSchema() {
     return appSchema.value?.data?.packages || []
   })
 
-  const generateStoresConfig = () => {
-    if (globalStates.value.length === 0) return []
-    return globalStates.value.map((store) => ({
-      id: store.id,
-      state: JSON.parse(JSON.stringify(store.state)),
-      actions: Object.fromEntries(
-        Object.keys(store.actions || {}).map((key) => {
-          // 使用 parseJSFunction ，但是上下文由pinia内部绑定
-          return [key, parseJSFunction(store.actions[key], {}, {})]
-        })
-      ),
-      getters: Object.fromEntries(
-        Object.keys(store.getters || {}).map((key) => {
-          // 同样处理 getters
-          return [key, parseJSFunction(store.getters[key], {}, {})]
-        })
-      )
-    }))
-  }
-
   // 检查应用是否已加载
   const isAppLoaded = computed(() => {
     return !!appSchema.value
@@ -307,7 +286,6 @@ export function useAppSchema() {
     fetchBlocks,
     getPageByRoute,
     getPageById,
-    generateStoresConfig,
 
     // 初始化方法
     initializeAppConfig,
