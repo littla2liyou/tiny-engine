@@ -68,9 +68,6 @@ async function createRouterConfig() {
     if (page.meta.isHome) {
       routes.push({ path: '/', redirect: `${page.path}` })
     }
-    if (page.meta.hasDefault) {
-      routes.push({ path: `${page.path}`, redirect: `${page.meta.defaultPath}` })
-    }
   })
 
   routes.push({
