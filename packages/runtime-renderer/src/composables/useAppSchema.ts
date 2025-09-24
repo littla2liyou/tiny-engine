@@ -294,13 +294,14 @@ export function useAppSchema() {
         path: isChildRoute ? page.meta.router : `/${page.meta.router}`,
         name: `${page.meta.id}`,
         component: PageRenderer,
+        props: { pageId: page.meta.id }, // 静态对象，避免路由嵌套时被覆盖
         children: [],
         meta: {
           pageId: page.meta.id,
           pageName: page.meta.name,
           isHome: page.meta.isHome,
           hasChildren: (page.children && page.children.length > 0) || false,
-          depth: page.meta.depth, // 疑问：此属性和面包屑有关吗？
+          depth: page.meta.depth, // 疑问：在嵌套路由中此属性没有改变，此属性和面包屑有关吗？
           pageSchema: page.meta.page_content
         }
       }

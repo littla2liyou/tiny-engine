@@ -46,7 +46,7 @@ export interface PageSchema {
   componentName: string
   fileName: string
   lifeCycles?: LifeCycles | null
-  meta: PageMeta
+  meta?: PageMeta
   methods: Record<string, JSFunction>
   props: Record<string, any>
   state: Record<string, any>
@@ -176,7 +176,7 @@ export interface DataSourceColumn {
 export interface UtilFunction {
   name: string
   type: string
-  content: JSFunction
+  content: Record<string, any>
 }
 
 // 包配置

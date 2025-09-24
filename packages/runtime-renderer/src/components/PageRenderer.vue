@@ -1,16 +1,9 @@
 <template>
-  <SchemaRenderer :schema="currentSchema" />
+  <SchemaRenderer :key="props.pageId" :pageId="props.pageId" />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import SchemaRenderer from '../renderer/RenderMain'
-import { useRoute } from 'vue-router'
-import { computed } from 'vue'
-
-const route = useRoute()
-
-// 直接使用路由 meta 中的页面 schema
-const currentSchema = computed(() => {
-  return (route.meta && route.meta.pageSchema) || {}
-})
+// 传递pageId而不是schema，避免出现嵌套的子组件无法正确接收schema的问题
+const props = defineProps<{ pageId: number }>()
 </script>

@@ -10,43 +10,36 @@
  *
  */
 
-import { h, provide, nextTick, reactive, watchEffect, ref, type PropType, defineComponent, inject } from 'vue'
+import { h, computed, provide, nextTick, reactive, watch, ref, defineComponent, inject } from 'vue'
 import Loading from '../components/Loading.vue'
-import renderer, { parseData, setPageCss, clearAllPageCSS } from './index'
+import renderer, { parseData, setPageCss } from './index'
 import { useState } from './page-function/state'
 import useContext from './useContext.ts'
 import { PageLifecycleWrapper } from './RuntimeLifecycle'
 import { useRouter, useRoute } from 'vue-router'
-
-interface Schema {
-  children?: any[]
-  methods?: Record<string, any>
-  state?: Record<string, any>
-  css?: string
-  lifeCycles?: any
-  dataSource?: Record<string, any>
-  props?: Record<string, any>
-  utils?: any[]
-  bridge?: any[]
-  inputs?: any[]
-  outputs?: any[]
-  fileName?: string
-  id?: string
-}
+import { useAppSchema } from '../composables/useAppSchema'
+import type { PageSchema as Schema } from '../types/schema'
 
 interface Props {
-  schema: Schema
+  pageId: number
 }
 
 export default defineComponent({
   name: 'RenderMain',
   props: {
-    schema: {
-      type: Object as PropType<Schema>,
-      default: () => ({})
+    pageId: {
+      type: Number,
+      default: 0
     }
   },
   setup(props: Props) {
+    const { getPageById } = useAppSchema()
+
+    const currentSchema = computed(() => {
+      const page = getPageById(props.pageId)?.meta?.page_content // 通过 pageId 获取最新的页面对象
+      return JSON.parse(JSON.stringify(page))
+    })
+
     const route = useRoute()
     const router = useRouter()
     const { context, setContext, getContext } = useContext()
@@ -56,12 +49,9 @@ export default defineComponent({
     const stores = inject('stores')
     provide('pageContext', context)
 
-    const pageSchema = reactive<Schema>({})
+    const pageSchema = reactive<Schema>({} as Schema)
     const methods: Record<string, any> = {}
     const { state, setState } = useState({ getContext })
-
-    // Add flag to track initialization
-    let isSchemaInitialized = false
 
     const setMethods = (data: Record<string, any> = {}, clear?: boolean) => {
       if (clear) reset(methods)
@@ -102,25 +92,18 @@ export default defineComponent({
       setPageCss(data.css || '', String(route?.name) || 'render-main')
 
       Object.assign(pageSchema, newSchema)
-      isSchemaInitialized = true
     }
 
     // 监听 schema 变化
-    watchEffect(() => {
-      if (!props.schema || !Object.keys(props.schema).length) {
-        return
-      }
-
-      // 检查是否是更新（非首次加载）
-      const isUpdate = isSchemaInitialized && JSON.stringify(props.schema) !== JSON.stringify(pageSchema)
-
-      // 清理之前的CSS（仅在schema更新时）
-      if (isUpdate) {
-        clearAllPageCSS()
-      }
-
-      setSchema(props.schema)
-    })
+    watch(
+      () => currentSchema.value,
+      async () => {
+        const schema = currentSchema.value
+        if (!schema || !Object.keys(schema).length) return
+        await setSchema(schema)
+      },
+      { immediate: true }
+    )
 
     // 添加 refreshKey 用于强制触发重新渲染
     const refreshKey = ref(0)
