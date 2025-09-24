@@ -10,7 +10,7 @@
  *
  */
 
-import { h, computed, provide, nextTick, reactive, watch, ref, defineComponent, inject } from 'vue'
+import { h, computed, provide, nextTick, reactive, watch, defineComponent, inject } from 'vue'
 import Loading from '../components/Loading.vue'
 import renderer, { parseData, setPageCss } from './index'
 import { useState } from './page-function/state'
@@ -105,18 +105,14 @@ export default defineComponent({
       { immediate: true }
     )
 
-    // 添加 refreshKey 用于强制触发重新渲染
-    const refreshKey = ref(0)
-
     return {
       pageSchema,
       methods,
-      state,
-      refreshKey
+      state
     }
   },
   render(): any {
-    const { pageSchema, refreshKey }: { pageSchema: Schema; refreshKey: any } = this as any
+    const { pageSchema }: { pageSchema: Schema } = this as any
 
     // 渲染画布增加根节点，与出码和预览保持一致
     const rootChildrenSchema: any = {
@@ -130,7 +126,6 @@ export default defineComponent({
       ? h(PageLifecycleWrapper, {
           schema: rootChildrenSchema,
           lifeCycles: pageSchema.lifeCycles || {},
-          refreshKey: refreshKey.value,
           renderContent: (_state) => h(renderer, { schema: rootChildrenSchema, parent: pageSchema })
         })
       : [h(Loading)]
