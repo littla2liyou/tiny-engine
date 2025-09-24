@@ -117,8 +117,8 @@ export default defineComponent({
     // 渲染画布增加根节点，与出码和预览保持一致
     const rootChildrenSchema: any = {
       componentName: 'div',
-      // 手动添加一个唯一的属性，后续在画布选中此节点时方便处理额外的逻辑。由于没有修改schema，不会影响出码
-      props: {},
+      // 把页级 props（主要是 className: "page-base-style"）挂到根容器
+      props: { ...(pageSchema.props || {}) },
       children: pageSchema.children
     }
 
