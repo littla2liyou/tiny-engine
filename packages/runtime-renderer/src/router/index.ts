@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAppSchema } from '../composables/useAppSchema'
 import type { RouteConfig } from '../types/config'
-import PageRenderer from '../components/PageRenderer.vue'
 import { reactive } from 'vue'
 
 // 异步初始化路由配置
@@ -22,7 +21,7 @@ async function createRouterConfig() {
       const routeConfigCurrent = {
         path: isChildRoute ? page.meta.router : `/${page.meta.router}`,
         name: `${page.meta.id}`,
-        component: PageRenderer,
+        component: () => import('../components/PageRenderer.vue'), // 懒加载，避免过早引入RenderMain
         props: { pageId: page.meta.id }, // 静态对象，避免路由嵌套时被覆盖
         children: [],
         meta: {
