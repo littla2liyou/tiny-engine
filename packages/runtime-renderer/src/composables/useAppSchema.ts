@@ -3,14 +3,14 @@ import type {
   AppSchema,
   ComponentMap,
   DataSourceConfig,
-  // UtilFunction,
+  Util,
   PackageConfig,
   BlockItem,
   BlockContent
 } from '../types/schema'
+import { initUtils } from '../app-function/utils'
 import appSchemaMock from '../mock/appSchema.json'
 import blocksMock from '../mock/blocks.json'
-// import { appFunctionManager } from '../utils/AppFunctionManager'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
@@ -44,50 +44,20 @@ export function useAppSchema() {
     })
   }
 
-  // // 将工具函数暴露给页面方法
-  // const exposeUtilsToPageMethods = (utils: UtilFunction[]) => {
-  //   // 创建全局页面方法对象
-  //   if (!window.pageMethods) {
-  //     window.pageMethods = {}
-  //   }
+  // 初始化工具函数
+  const initializeUtils = async (utils: Util[]) => {
+    // eslint-disable-next-line no-console
+    console.log('初始化工具函数:', utils.length, '个函数')
 
-  //   utils.forEach((util) => {
-  //     if (util.type === 'function') {
-  //       // 将自定义函数添加到页面方法中
-  //       window.pageMethods[util.name] = (window as any)[util.name]
-  //     } else if (util.type === 'npm') {
-  //       // 将 npm 包添加到页面方法中
-  //       const pkg = (util as any).content?.package
-  //       const exportName = (util as any).content?.exportName
-  //       if (pkg && exportName) {
-  //         window.pageMethods[exportName] = (window as any)[exportName]
-  //       }
-  //     }
-  //   })
-
-  //   // eslint-disable-next-line no-console
-  //   console.log('页面方法已更新:', Object.keys(window.pageMethods))
-  // }
-
-  // // 初始化工具函数
-  // const initializeUtils = async (utils: UtilFunction[]) => {
-  //   // eslint-disable-next-line no-console
-  //   console.log('初始化工具函数:', utils.length, '个函数')
-
-  //   try {
-  //     // 使用工具函数管理器初始化所有工具
-  //     await appFunctionManager.initializeUtils(utils as any)
-
-  //     // 将工具函数暴露给页面方法
-  //     exposeUtilsToPageMethods(utils)
-
-  //     // eslint-disable-next-line no-console
-  //     console.log('工具函数初始化完成')
-  //   } catch (error) {
-  //     // eslint-disable-next-line no-console
-  //     console.error('工具函数初始化失败:', error)
-  //   }
-  // }
+    try {
+      await initUtils(utils)
+      // eslint-disable-next-line no-console
+      console.log('工具函数初始化完成')
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('工具函数初始化失败:', error)
+    }
+  }
 
   // 初始化包依赖
   const initializePackages = (packages: PackageConfig[]) => {
@@ -123,8 +93,8 @@ export function useAppSchema() {
     // 2. 初始化数据源
     initializeDataSources(schema.data.dataSource)
 
-    // // 4. 初始化工具函数
-    // initializeUtils(schema.data.utils)
+    // 4. 初始化工具函数
+    initializeUtils(schema.data.utils)
 
     // 5. 初始化包依赖
     initializePackages(schema.data.packages)
@@ -243,15 +213,6 @@ export function useAppSchema() {
     return appSchema.value?.data?.meta?.globalState || []
   })
 
-  // // 获取工具函数
-  // const utils = computed(() => {
-  //   return appSchema.value?.data?.utils || []
-  // })
-
-  // const utilsFunctions = computed(() => {
-  //   return appSchema.value?.data?.utils?.filter((u) => u.type === 'function') || []
-  // })
-
   // 获取包依赖
   const packages = computed(() => {
     return appSchema.value?.data?.packages || []
@@ -273,11 +234,9 @@ export function useAppSchema() {
     defaultPage,
     appConfig,
     appMeta,
-    // utilsFunctions,
     componentsMap,
     dataSourceConfig,
     globalStates,
-    // utils,
     packages,
     isAppLoaded,
 
@@ -289,9 +248,7 @@ export function useAppSchema() {
 
     // 初始化方法
     initializeAppConfig,
-    // initializeComponentsMap,
     initializeDataSources,
-    // initializeUtils,
     initializePackages,
     injectGlobalCSS
   }
