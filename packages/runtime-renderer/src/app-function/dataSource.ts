@@ -34,7 +34,7 @@ const dataSources = {
 
 export const dataSourceMap: Record<string, any> = {}
 
-const globalDataHandle = dataSources.dataHandler ? parseJSFunction(dataSources.dataHandler.value) : (res) => res
+const globalDataHandle = dataSources.dataHandler ? parseJSFunction(dataSources.dataHandler) : (res) => res
 
 // 统一的 load 构造
 const load = (http, options, dataSource, shouldFetch) => (params?, customUrl?) => {
@@ -85,11 +85,11 @@ dataSources.list.forEach((cfg) => {
 
   dataSourceMap[cfg.name] = dataSource
 
-  const shouldFetch = cfg.shouldFetch?.value ? parseJSFunction(cfg.shouldFetch.value) : () => true
-  const willFetch = cfg.willFetch?.value ? parseJSFunction(cfg.willFetch.value) : (options) => options
+  const shouldFetch = cfg.shouldFetch?.value ? parseJSFunction(cfg.shouldFetch) : () => true
+  const willFetch = cfg.willFetch?.value ? parseJSFunction(cfg.willFetch) : (options) => options
 
   const dataHandler = (res) => {
-    const handled = cfg.dataHandler?.value ? parseJSFunction(cfg.dataHandler.value)(res) : res
+    const handled = cfg.dataHandler?.value ? parseJSFunction(cfg.dataHandler)(res) : res
     dataSource.status = 'loaded'
     dataSource.data = handled
     return handled
@@ -97,7 +97,7 @@ dataSources.list.forEach((cfg) => {
 
   const errorHandler = (error) => {
     if (cfg.errorHandler?.value) {
-      parseJSFunction(cfg.errorHandler.value)(error)
+      parseJSFunction(cfg.errorHandler)(error)
     }
     dataSource.status = 'error'
     dataSource.error = error
