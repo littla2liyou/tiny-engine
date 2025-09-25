@@ -235,7 +235,7 @@ export function useAppSchema() {
 
   // 获取数据源配置
   const dataSourceConfig = computed(() => {
-    return appSchema.value?.data?.dataSource || null
+    return appSchema.value?.data?.dataSource || {}
   })
 
   // 获取全局状态配置
@@ -289,7 +289,7 @@ export function useAppSchema() {
 
     // 初始化方法
     initializeAppConfig,
-    //initializeComponentsMap,
+    // initializeComponentsMap,
     initializeDataSources,
     // initializeUtils,
     initializePackages,

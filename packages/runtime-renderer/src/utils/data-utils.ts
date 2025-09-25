@@ -12,7 +12,7 @@ export const newFn = (...argv) => {
 }
 
 // 用于解析store中的actions和getters
-export const parseJSFunction = (data, _scope, _ctx) => {
+export const parseJSFunction = (data: any, _scope: any = null, _ctx: any = null) => {
   try {
     const fn = newFn(`return ${data.value}`).call(null) // 拿到函数本体，不绑定任何 this
     return fn

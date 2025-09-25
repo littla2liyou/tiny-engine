@@ -15,11 +15,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run",
-    "test:router": "vitest run src/router/__tests__",
-    "test:router:watch": "vitest src/router/__tests__",
-    "test:router:coverage": "vitest run src/router/__tests__ --coverage",
-    "test:router:simple": "vitest run src/router/__tests__/simple.test.ts"
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@opentiny/tiny-engine-builtin-component": "workspace:*",
@@ -28,7 +24,9 @@
     "@opentiny/vue-icon": "*",
     "vue": "^3.3.0",
     "vue-router": "^4.2.0",
-    "pinia": "^2.1.0"
+    "pinia": "^2.1.0",
+    "axios": "latest",
+    "axios-mock-adapter": "^1.19.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
