@@ -6,11 +6,13 @@ import type {
   Util,
   PackageConfig,
   BlockItem,
-  BlockContent
+  BlockContent,
+  I18nConfig
 } from '../types/schema'
 import { initUtils } from '../app-function/utils'
 import appSchemaMock from '../mock/appSchema.json'
 import blocksMock from '../mock/blocks.json'
+import i18n from '@opentiny/tiny-engine-i18n-host'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
@@ -83,6 +85,13 @@ export function useAppSchema() {
     document.head.appendChild(style)
   }
 
+  const initializeI18n = (i18nConfig: I18nConfig) => {
+    if (!i18nConfig) return
+    Object.entries(i18nConfig).forEach(([loc, msgs]) => {
+      i18n.global.mergeLocaleMessage(loc, msgs as any)
+    })
+  }
+
   // 初始化应用配置
   const initializeAppConfig = async (schema: AppSchema) => {
     if (!schema?.data) return
@@ -92,6 +101,9 @@ export function useAppSchema() {
 
     // 2. 初始化数据源
     initializeDataSources(schema.data.dataSource)
+
+    // 3. 初始化国际化
+    initializeI18n(schema.data.i18n)
 
     // 4. 初始化工具函数
     initializeUtils(schema.data.utils)
@@ -223,6 +235,10 @@ export function useAppSchema() {
     return !!appSchema.value
   })
 
+  const i18nConfig = computed(() => {
+    return appSchema.value?.data?.i18n || {}
+  })
+
   return {
     // 状态
     appSchema: readonly(appSchema),
@@ -239,6 +255,7 @@ export function useAppSchema() {
     globalStates,
     packages,
     isAppLoaded,
+    i18nConfig,
 
     // 方法
     fetchAppSchema,
