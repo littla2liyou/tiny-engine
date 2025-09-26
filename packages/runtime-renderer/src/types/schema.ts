@@ -6,7 +6,7 @@ export interface AppSchema {
     componentsTree: PageSchema[]
     css: string
     dataSource: DataSourceConfig
-    utils: UtilFunction[]
+    utils: Util[]
     packages: PackageConfig[]
     meta: AppMeta
     config: AppConfig
@@ -147,9 +147,6 @@ export interface DataSourceConfig {
 // 数据源项
 export interface DataSourceItem {
   id: number
-  tenantId: string
-  renterId?: any
-  siteId?: any
   name: string
   data: {
     columns: DataSourceColumn[]
@@ -184,7 +181,7 @@ export interface DataSourceColumn {
 }
 
 // 工具函数
-export interface UtilFunction {
+export interface Util {
   name: string
   type: string
   content: Record<string, any>
