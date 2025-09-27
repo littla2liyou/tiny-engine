@@ -21,6 +21,8 @@ import {
   CanvasFlexBox,
   CanvasSection
 } from '@opentiny/tiny-engine-builtin-component'
+import { ElInput, ElDatePicker, ElButton, ElForm, ElFormItem, ElTable, ElTableColumn } from 'element-plus'
+import 'element-plus/dist/index.css'
 import {
   CanvasBox,
   CanvasIcon,
@@ -53,7 +55,14 @@ const Mapper = {
   CanvasPlaceholder,
   RouterLink: CanvasRouterLink,
   RouterView: CanvasRouterView,
-  Collection: CanvasCollection
+  Collection: CanvasCollection,
+  ElInput,
+  ElDatePicker,
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElTable,
+  ElTableColumn
 }
 
 export const collectionMethodsMap = {}

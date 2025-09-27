@@ -22,12 +22,13 @@
     "@opentiny/tiny-engine-i18n-host": "workspace:*",
     "@opentiny/vue": "~3.20.0",
     "@opentiny/vue-icon": "*",
-    "vue": "^3.4.15",
-    "vue-router": "^4.2.0",
-    "pinia": "^2.1.0",
     "axios": "latest",
     "axios-mock-adapter": "^1.19.0",
-    "vue-i18n": "^9.9.0"
+    "element-plus": "2.4.2",
+    "pinia": "^2.1.0",
+    "vue": "^3.4.15",
+    "vue-i18n": "^9.9.0",
+    "vue-router": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
