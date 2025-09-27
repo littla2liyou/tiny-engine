@@ -1,14 +1,5 @@
 import { ref, computed, readonly } from 'vue'
-import type {
-  AppSchema,
-  ComponentMap,
-  DataSourceConfig,
-  Util,
-  PackageConfig,
-  BlockItem,
-  BlockContent,
-  I18nConfig
-} from '../types/schema'
+import type { AppSchema, Util, BlockItem, BlockContent, I18nConfig } from '../types/schema'
 import { initUtils } from '../app-function/utils'
 import appSchemaMock from '../mock/appSchema.json'
 import blocksMock from '../mock/blocks.json'
@@ -19,33 +10,6 @@ const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 export function useAppSchema() {
-  // 初始化组件映射表
-  const initializeComponentsMap = (componentsMap: ComponentMap[]) => {
-    // eslint-disable-next-line no-console
-    console.log('初始化组件映射表:', componentsMap.length, '个组件')
-
-    // 这里可以处理组件依赖加载
-    componentsMap.forEach((component) => {
-      if (component.package && component.dependencies) {
-        // eslint-disable-next-line no-console
-        console.log(`加载组件: ${component.componentName} from ${component.package}`)
-        // 实际项目中这里会动态加载组件库
-      }
-    })
-  }
-
-  // 初始化数据源
-  const initializeDataSources = (dataSource: DataSourceConfig) => {
-    // eslint-disable-next-line no-console
-    console.log('初始化数据源:', dataSource.list.length, '个数据源')
-
-    dataSource.list.forEach((source) => {
-      // eslint-disable-next-line no-console
-      console.log(`数据源: ${source.name} (${source.data.type})`)
-      // 这里可以预加载数据源配置
-    })
-  }
-
   // 初始化工具函数
   const initializeUtils = async (utils: Util[]) => {
     // eslint-disable-next-line no-console
@@ -59,18 +23,6 @@ export function useAppSchema() {
       // eslint-disable-next-line no-console
       console.error('工具函数初始化失败:', error)
     }
-  }
-
-  // 初始化包依赖
-  const initializePackages = (packages: PackageConfig[]) => {
-    // eslint-disable-next-line no-console
-    console.log('初始化包依赖:', packages.length, '个包')
-
-    packages.forEach((pkg) => {
-      // eslint-disable-next-line no-console
-      console.log(`包: ${pkg.name}@${pkg.version}`)
-      // 这里会动态加载CSS和JS资源
-    })
   }
 
   // 注入全局CSS
@@ -96,22 +48,13 @@ export function useAppSchema() {
   const initializeAppConfig = async (schema: AppSchema) => {
     if (!schema?.data) return
 
-    // 1. 初始化组件映射表
-    initializeComponentsMap(schema.data.componentsMap)
-
-    // 2. 初始化数据源
-    initializeDataSources(schema.data.dataSource)
-
-    // 3. 初始化国际化
+    // 初始化国际化
     initializeI18n(schema.data.i18n)
 
-    // 4. 初始化工具函数
+    // 初始化工具函数
     initializeUtils(schema.data.utils)
 
-    // 5. 初始化包依赖
-    initializePackages(schema.data.packages)
-
-    // 6. 注入全局CSS
+    // 注入全局CSS
     injectGlobalCSS(schema.data.css)
   }
 
@@ -265,8 +208,6 @@ export function useAppSchema() {
 
     // 初始化方法
     initializeAppConfig,
-    initializeDataSources,
-    initializePackages,
     injectGlobalCSS
   }
 }
