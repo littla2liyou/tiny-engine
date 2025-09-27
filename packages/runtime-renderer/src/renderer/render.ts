@@ -83,25 +83,23 @@ export const getComponent = (name) => {
     return defineComponent({
       name: `${name}`,
       setup() {
-        return () => {
-          // 区块的真实内容在 window.blocks 中，而不是页面的 schema 中
-          // 页面的 schema 只是区块的引用，children 为空
-          const blockContent = blockSchema.schema
+        // 区块的真实内容在 window.blocks 中，而不是页面的 schema 中
+        // 页面的 schema 只是区块的引用，children 为空
+        const blockContent = blockSchema.schema
 
-          // eslint-disable-next-line no-console
-          console.log(`区块 ${name} 渲染:`, {
-            hasBlockSchema: !!blockSchema.schema,
-            blockContent,
-            children: blockContent?.children,
-            childrenLength: blockContent?.children?.length
-          })
+        const context = getBlockContext(blockContent)
 
-          const context = getBlockContext(blockContent)
-
-          // 递归渲染区块的 children
-          // eslint-disable-next-line
-          return renderGroup(blockContent.children, {}, context, renderComponent)
+        return {
+          context
         }
+      },
+      render() {
+        // 递归渲染区块的 children
+        const blockContent = blockSchema.schema
+        const context = this.context
+
+        // eslint-disable-next-line
+        return renderGroup(blockContent.children, {}, context, renderComponent)
       }
     })
   }

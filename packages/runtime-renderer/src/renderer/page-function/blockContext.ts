@@ -18,57 +18,58 @@ import type { PageContent as Schema } from '../../types/schema.ts'
 import dataSourceMap from '../../app-function/dataSource.js'
 import { getUtilsAll } from '../../app-function/utils.ts'
 
-const { context, setContext, getContext } = useContext()
-const reset = (obj: Record<string, any>) => {
-  Object.keys(obj).forEach((key) => delete obj[key])
-}
-const stores = inject('stores')
+// 创建 context 实例的工厂函数
+export const createBlockContext = () => {
+  const { context, setContext, getContext } = useContext()
+  const stores = inject('stores')
+  const methods: Record<string, any> = {}
+  const { state, setState } = useState({ getContext })
 
-const methods: Record<string, any> = {}
-const { state, setState } = useState({ getContext })
-const setMethods = (data: Record<string, any> = {}, clear?: boolean) => {
-  if (clear) reset(methods)
-  // 这里有些方法在画布还是有执行的必要的，比如说表格的renderer和formatText方法，包括一些自定义渲染函数
-  Object.assign(
-    methods,
-    Object.fromEntries(
-      Object.keys(data).map((key) => {
-        return [key, parseData(data[key], {}, getContext())]
-      })
+  const setMethods = (data: Record<string, any> = {}, clear?: boolean) => {
+    if (clear) {
+      Object.keys(methods).forEach((key) => delete methods[key])
+    }
+    Object.assign(
+      methods,
+      Object.fromEntries(
+        Object.keys(data).map((key) => {
+          return [key, parseData(data[key], {}, getContext())]
+        })
+      )
     )
-  )
-  setContext(methods)
-}
-
-const setSchema = async (data: Schema) => {
-  if (!data) {
-    return
+    setContext(methods)
   }
 
-  const newSchema = JSON.parse(JSON.stringify(data))
+  const setSchema = async (data: Schema) => {
+    if (!data) return
 
-  const context = {
-    state,
-    stores,
-    dataSourceMap,
-    utils: getUtilsAll()
+    const newSchema = JSON.parse(JSON.stringify(data))
+
+    const contextData = {
+      state,
+      stores,
+      dataSourceMap,
+      utils: getUtilsAll()
+    }
+    setContext(contextData, true)
+    setMethods(newSchema.methods, true)
+    setState(newSchema.state, true)
+    await nextTick()
+
+    const cssHandler = getCSSHandler({ enableScoped: true })
+    cssHandler.setPageCss(data.css || '', `block-${data.fileName || 'unknown'}`)
+
+    return context
   }
-  // 此处提升很重要，因为setState、initProps也会触发画布重新渲染，所以需要提升上下文环境的设置时间
-  setContext(context, true)
 
-  // 设置方法调用上下文
-  setMethods(newSchema.methods, true)
-
-  // 这里setState（会触发画布渲染），是因为状态管理里面的变量会用到props、utils、bridge、stores、methods
-  setState(newSchema.state, true)
-  await nextTick()
-
-  // 使用专门的处理器处理block CSS
-  const cssHandler = getCSSHandler({ enableScoped: true })
-  cssHandler.setPageCss(data.css || '', `block-${data.fileName || 'unknown'}`)
+  return {
+    setSchema,
+    getContext: () => context
+  }
 }
 
 export const getBlockContext = (schema: Schema) => {
-  setSchema(schema)
-  return context
+  const blockContext = createBlockContext()
+  blockContext.setSchema(schema)
+  return blockContext.getContext()
 }
