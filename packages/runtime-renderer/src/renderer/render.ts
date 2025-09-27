@@ -13,6 +13,7 @@
 import { h, provide, inject, defineComponent } from 'vue'
 import { isHTMLTag, hyphenate } from '@vue/shared'
 import TinyVue, { Notify } from '@opentiny/vue'
+import { getBlockContext } from './page-function/blockContext'
 import {
   CanvasRow,
   CanvasCol,
@@ -34,8 +35,6 @@ import { parseData, parseCondition, parseLoopArgs, generateFn, newFn } from './p
 
 const hyphenateRE = /\B([A-Z])/g
 const customElements = {}
-// const [JS_EXPRESSION, JS_FUNCTION] = ['JSExpression', 'JSFunction']
-// const isOn = (key) => /^on[A-Z]\w*/.test(key)
 
 const Mapper = {
   Icon: CanvasIcon,
@@ -83,10 +82,7 @@ export const getComponent = (name) => {
     // 返回一个动态组件，用于渲染区块
     return defineComponent({
       name: `${name}`,
-      props: {
-        schema: Object
-      },
-      setup(props) {
+      setup() {
         return () => {
           // 区块的真实内容在 window.blocks 中，而不是页面的 schema 中
           // 页面的 schema 只是区块的引用，children 为空
@@ -94,16 +90,17 @@ export const getComponent = (name) => {
 
           // eslint-disable-next-line no-console
           console.log(`区块 ${name} 渲染:`, {
-            hasPropsSchema: !!props.schema,
             hasBlockSchema: !!blockSchema.schema,
             blockContent,
             children: blockContent?.children,
             childrenLength: blockContent?.children?.length
           })
 
+          const context = getBlockContext(blockContent)
+
           // 递归渲染区块的 children
           // eslint-disable-next-line
-          return renderGroup(blockContent.children, {}, {}, renderComponent)
+          return renderGroup(blockContent.children, {}, context, renderComponent)
         }
       }
     })
