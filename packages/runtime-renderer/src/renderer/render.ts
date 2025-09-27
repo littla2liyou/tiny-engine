@@ -29,7 +29,8 @@ import {
   CanvasImg,
   CanvasPlaceholder,
   CanvasRouterLink,
-  CanvasRouterView
+  CanvasRouterView,
+  CanvasCollection
 } from './builtin'
 import { parseData, parseCondition, parseLoopArgs } from './parser'
 
@@ -51,7 +52,8 @@ const Mapper = {
   CanvasSection,
   CanvasPlaceholder,
   RouterLink: CanvasRouterLink,
-  RouterView: CanvasRouterView
+  RouterView: CanvasRouterView,
+  Collection: CanvasCollection
 }
 
 export const collectionMethodsMap = {}
