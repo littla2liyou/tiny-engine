@@ -12,7 +12,7 @@
 
 import { h, provide, inject, defineComponent } from 'vue'
 import { isHTMLTag, hyphenate } from '@vue/shared'
-import TinyVue, { Notify } from '@opentiny/vue'
+import TinyVue from '@opentiny/vue'
 import { getBlockContext } from './page-function/blockContext'
 import {
   CanvasRow,
@@ -31,7 +31,7 @@ import {
   CanvasRouterLink,
   CanvasRouterView
 } from './builtin'
-import { parseData, parseCondition, parseLoopArgs, generateFn, newFn } from './parser'
+import { parseData, parseCondition, parseLoopArgs } from './parser'
 
 const hyphenateRE = /\B([A-Z])/g
 const customElements = {}
@@ -115,24 +115,6 @@ export const setConfigure = (configureData) => {
   Object.assign(configure, configureData)
 }
 
-// 解析函数字符串结构
-const parseFunctionString = (fnStr) => {
-  const fnRegexp = /(async)?.*?(\w+) *\(([\s\S]*?)\) *\{([\s\S]*)\}/
-  const result = fnRegexp.exec(fnStr)
-  if (result) {
-    return {
-      type: result[1] || '',
-      name: result[2],
-      params: result[3]
-        .split(',')
-        .map((item) => item.trim())
-        .filter((item) => Boolean(item)),
-      body: result[4]
-    }
-  }
-  return null
-}
-
 const _getPlainProps = (object = {}) => {
   const { slot, ...rest } = object
   const props = {}
@@ -173,71 +155,12 @@ const generateCollection = (schema) => {
   }
 }
 
-// 解析JSX字符串为可执行函数
-const parseJSXFunction = (data, ctx) => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const babelPluginJSX = require('@vue/babel-plugin-jsx')
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { transformSync } = require('@babel/core')
-
-    const transformJSX = (code) => {
-      const res = transformSync(code, {
-        plugins: [
-          [
-            babelPluginJSX,
-            {
-              pragma: 'h'
-            }
-          ]
-        ]
-      })
-      return (res.code || '')
-        .replace(/import \{.+\} from "vue";/, '')
-        .replace(/h\(_?resolveComponent\((.*?)\)/g, `h(this.getComponent($1)`)
-        .replace(/_?resolveComponent/g, 'h')
-        .replace(/_?createTextVNode\((.*?)\)/g, '$1')
-        .trim()
-    }
-
-    const newValue = transformJSX(data.value)
-    const fnInfo = parseFunctionString(newValue)
-    if (!fnInfo) throw Error('函数解析失败，请检查格式。示例：function fnName() { }')
-
-    return newFn(...fnInfo.params, fnInfo.body).bind({
-      ...ctx,
-      getComponent
-    })
-  } catch (error) {
-    Notify({
-      type: 'warning',
-      title: '函数声明解析报错',
-      message: error?.message || '函数声明解析报错，请检查语法'
-    })
-
-    return newFn()
-  }
-}
-
-const _parseJSFunction = (data, scope, ctx) => {
-  try {
-    const innerFn = newFn(`return ${data.value}`).bind(ctx)()
-    return generateFn(innerFn, ctx)
-  } catch (error) {
-    return parseJSXFunction(data, ctx)
-  }
-}
-
 const renderDefault = (
   children: any[],
   scope: Record<string, any>,
   parent: any,
   renderComponent: (schema: any, scope: Record<string, any>, parent: any) => any
 ) => children.map?.((child) => renderComponent(child, scope, parent))
-
-const _parseJSSlot = (data, scope, renderComponent) => {
-  return ($scope) => renderDefault(data.value, { ...scope, ...$scope }, data, renderComponent)
-}
 
 const generateSlotGroup = (children, isCustomElm, schema) => {
   const slotGroup = {}
