@@ -1,13 +1,15 @@
 import { ref, computed, readonly } from 'vue'
 import type { AppSchema, Util, BlockItem, BlockContent, I18nConfig } from '../types/schema'
 import { initUtils } from '../app-function/utils'
-import appSchemaMock from '../mock/appSchema.json'
-import blocksMock from '../mock/blocks.json'
+// import appSchemaMock from '../mock/appSchema.json'
+// import blocksMock from '../mock/blocks.json'
 import i18n from '@opentiny/tiny-engine-i18n-host'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
 const error = ref<string | null>(null)
+const searchParams = new URLSearchParams(location.search)
+const appId = searchParams.get('id')
 
 export function useAppSchema() {
   // 初始化工具函数
@@ -65,11 +67,14 @@ export function useAppSchema() {
 
     try {
       // 使用mock数据，实际项目中这里会调用API
-      const response = appSchemaMock as unknown as AppSchema
-      appSchema.value = response
+      const response = await fetch(`/app-center/v1/api/apps/schema/${appId}`)
+      appSchema.value = await response.json()
+
+      // eslint-disable-next-line no-console
+      console.log('拉取到的应用Schema:', response)
 
       // 解析并初始化应用级配置
-      await initializeAppConfig(response)
+      await initializeAppConfig(appSchema.value)
 
       // eslint-disable-next-line no-console
       console.log('应用Schema加载成功:', response)
@@ -85,7 +90,9 @@ export function useAppSchema() {
   // 拉取区块schema
   // 在 useAppSchema.ts 中
   const fetchBlocks = async (_appId?: string) => {
-    const response = blocksMock.data as unknown as BlockItem[]
+    const response = await fetch('/material-center/api/blocks')
+    const blockJSON = await response.json()
+    const blocks: BlockItem[] = blockJSON.data || []
 
     // 转换为组件映射格式
     const blocksMap: Record<
@@ -100,7 +107,7 @@ export function useAppSchema() {
         }
       }
     > = {}
-    response.forEach((block) => {
+    blocks.forEach((block) => {
       if (block.content) {
         blocksMap[block.label] = {
           schema: block.content,
