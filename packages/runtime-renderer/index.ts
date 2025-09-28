@@ -22,8 +22,9 @@ import i18n from '@opentiny/tiny-engine-i18n-host'
 export const initRuntimeRenderer = async () => {
   const searchParams = new URLSearchParams(location.search)
   const initQuery = Object.fromEntries(searchParams.entries())
-  const { fetchAppSchema } = useAppSchema()
+  const { fetchAppSchema, fetchBlocks } = useAppSchema()
   await fetchAppSchema()
+  await fetchBlocks()
   const router = await createAppRouter(initQuery)
 
   const pinia = createPinia()
