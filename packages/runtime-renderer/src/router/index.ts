@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAppSchema } from '../composables/useAppSchema'
 import type { RouteConfig } from '../types/config'
 import { reactive } from 'vue'
@@ -75,19 +75,9 @@ async function createRouterConfig() {
   return routes
 }
 
-export async function createAppRouter(initQuery = {}) {
+export async function createAppRouter() {
   const routes = await createRouterConfig()
-  const router = createRouter({ history: createWebHistory('/runtime.html'), routes })
-
-  // 全局路由守卫保留初始query参数
-  router.beforeEach((to, from, next) => {
-    const mergedQuery = { ...to.query, ...initQuery }
-    if (JSON.stringify(mergedQuery) !== JSON.stringify(to.query)) {
-      next({ ...to, query: mergedQuery })
-    } else {
-      next()
-    }
-  })
+  const router = createRouter({ history: createWebHashHistory('/runtime.html'), routes })
 
   if (typeof window !== 'undefined') {
     window.__DEBUG_ROUTER__ = router
