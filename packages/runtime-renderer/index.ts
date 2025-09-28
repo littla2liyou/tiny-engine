@@ -19,7 +19,9 @@ import i18n from '@opentiny/tiny-engine-i18n-host'
 
 // 初始化运行时渲染器
 export const initRuntimeRenderer = async () => {
-  const router = await createAppRouter()
+  const searchParams = new URLSearchParams(location.search)
+  const initQuery = Object.fromEntries(searchParams.entries())
+  const router = await createAppRouter(initQuery)
 
   const pinia = createPinia()
   const storesConfig = generateStoresConfig()

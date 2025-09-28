@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAppSchema } from '../composables/useAppSchema'
 import type { RouteConfig } from '../types/config'
 import { reactive } from 'vue'
-
 // 异步初始化路由配置
 async function createRouterConfig() {
   const { fetchAppSchema, pages } = useAppSchema()
@@ -77,9 +76,20 @@ async function createRouterConfig() {
   return routes
 }
 
-export async function createAppRouter() {
+export async function createAppRouter(initQuery = {}) {
   const routes = await createRouterConfig()
   const router = createRouter({ history: createWebHistory('/runtime.html'), routes })
+
+  // 全局路由守卫保留初始query参数
+  router.beforeEach((to, from, next) => {
+    const mergedQuery = { ...to.query, ...initQuery }
+    if (JSON.stringify(mergedQuery) !== JSON.stringify(to.query)) {
+      next({ ...to, query: mergedQuery })
+    } else {
+      next()
+    }
+  })
+
   if (typeof window !== 'undefined') {
     window.__DEBUG_ROUTER__ = router
     // eslint-disable-next-line no-console
