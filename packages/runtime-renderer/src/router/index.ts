@@ -4,8 +4,7 @@ import type { RouteConfig } from '../types/config'
 import { reactive } from 'vue'
 // 异步初始化路由配置
 async function createRouterConfig() {
-  const { fetchAppSchema, pages } = useAppSchema()
-  await fetchAppSchema()
+  const { pages } = useAppSchema()
 
   // 生成路由配置
   const generateRoutesConfig = () => {

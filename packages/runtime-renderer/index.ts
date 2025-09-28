@@ -11,6 +11,7 @@
  */
 
 import { createApp } from 'vue'
+import { useAppSchema } from './src/composables/useAppSchema'
 import { createAppRouter } from './src/router'
 import { createPinia } from 'pinia'
 import { createStores, generateStoresConfig } from './src/stores'
@@ -21,6 +22,8 @@ import i18n from '@opentiny/tiny-engine-i18n-host'
 export const initRuntimeRenderer = async () => {
   const searchParams = new URLSearchParams(location.search)
   const initQuery = Object.fromEntries(searchParams.entries())
+  const { fetchAppSchema } = useAppSchema()
+  await fetchAppSchema()
   const router = await createAppRouter(initQuery)
 
   const pinia = createPinia()
