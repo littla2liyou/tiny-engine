@@ -10,8 +10,6 @@
  *
  */
 
-import 'virtual:svg-icons-register'
-
 async function startApp() {
   // 导入runtime-renderer包的初始化函数（开发模式）
   const { initRuntimeRenderer } = await import('../../packages/runtime-renderer/index.ts')
