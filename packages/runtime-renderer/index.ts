@@ -20,8 +20,10 @@ import i18n from '@opentiny/tiny-engine-i18n-host'
 
 // 初始化运行时渲染器
 export const initRuntimeRenderer = async () => {
+  const searchParams = new URLSearchParams(location.search)
+  const appId = searchParams.get('id')
   const { fetchAppSchema, fetchBlocks } = useAppSchema()
-  await fetchAppSchema()
+  await fetchAppSchema(appId || '')
   await fetchBlocks()
   const router = await createAppRouter()
 
