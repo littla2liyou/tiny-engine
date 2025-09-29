@@ -9,11 +9,9 @@
  * A PARTICULAR PURPOSE. SEE THE APPLICABLE LICENSES FOR MORE DETAILS.
  *
  */
+import { initRuntimeRenderer } from '@opentiny/tiny-engine-runtime-renderer'
 
 async function startApp() {
-  // 导入runtime-renderer包的初始化函数（开发模式）
-  const { initRuntimeRenderer } = await import('../../packages/runtime-renderer/index.ts')
-  // 使用runtime-renderer包的初始化函数
   initRuntimeRenderer()
 }
 
