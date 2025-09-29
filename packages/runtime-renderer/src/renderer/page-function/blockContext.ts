@@ -11,7 +11,8 @@
  */
 
 import { nextTick, inject } from 'vue'
-import { parseData, getCSSHandler } from '../index'
+import { getCSSHandler } from './css-handler.ts'
+import { parseData } from '../parser/parser.ts'
 import { useState } from './state.ts'
 import useContext from '../useContext.ts'
 import type { PageContent as Schema } from '../../types/schema.ts'
