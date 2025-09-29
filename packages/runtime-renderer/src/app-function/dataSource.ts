@@ -7,11 +7,7 @@ const { dataSourceConfig } = useAppSchema()
 // 深拷贝防止修改原始 reactive
 const rawConfig = JSON.parse(JSON.stringify(dataSourceConfig.value || {}))
 
-/**
- * 统一结构:
- * 旧: { id,name,data:{ columns,data,type,options,dataHandler,willFetch,shouldFetch,errorHandler } }
- * 新: { id,name,columns,data,type,options,dataHandler,willFetch,shouldFetch,errorHandler }
- */
+// 将原本的配置格式标准化以方便复用出码逻辑
 const normalizeItem = (item: any) => {
   return {
     id: item.id,
@@ -28,7 +24,7 @@ const normalizeItem = (item: any) => {
 }
 
 const dataSources = {
-  dataHandler: rawConfig.dataHandler, // 顶级 dataHandler
+  dataHandler: rawConfig.dataHandler,
   list: (rawConfig.list || []).map(normalizeItem)
 }
 
@@ -75,29 +71,29 @@ const load = (http, options, dataSource, shouldFetch) => (params?, customUrl?) =
 }
 
 // 构建每个数据源
-dataSources.list.forEach((cfg) => {
+dataSources.list.forEach((config) => {
   const http = useHttp(globalDataHandle)
   const dataSource = {
-    config: cfg,
+    config: config,
     status: 'init',
-    data: { data: cfg.data } // 保持占位，后续 remote 成功后再写
+    data: { data: config.data } // 保持占位，后续 remote 成功后再写
   }
 
-  dataSourceMap[cfg.name] = dataSource
+  dataSourceMap[config.name] = dataSource
 
-  const shouldFetch = cfg.shouldFetch?.value ? parseJSFunction(cfg.shouldFetch) : () => true
-  const willFetch = cfg.willFetch?.value ? parseJSFunction(cfg.willFetch) : (options) => options
+  const shouldFetch = config.shouldFetch?.value ? parseJSFunction(config.shouldFetch) : () => true
+  const willFetch = config.willFetch?.value ? parseJSFunction(config.willFetch) : (options) => options
 
   const dataHandler = (res) => {
-    const handled = cfg.dataHandler?.value ? parseJSFunction(cfg.dataHandler)(res) : res
+    const handled = config.dataHandler?.value ? parseJSFunction(config.dataHandler)(res) : res
     dataSource.status = 'loaded'
     dataSource.data = handled
     return handled
   }
 
   const errorHandler = (error) => {
-    if (cfg.errorHandler?.value) {
-      parseJSFunction(cfg.errorHandler)(error)
+    if (config.errorHandler?.value) {
+      parseJSFunction(config.errorHandler)(error)
     }
     dataSource.status = 'error'
     dataSource.error = error
@@ -110,16 +106,16 @@ dataSources.list.forEach((cfg) => {
   if (import.meta.env.VITE_APP_MOCK === 'mock') {
     http.mock([
       {
-        url: cfg.options?.uri,
+        url: config.options?.uri,
         response() {
-          return Promise.resolve([200, { data: cfg.data }])
+          return Promise.resolve([200, { data: config.data }])
         }
       },
       { url: '*', proxy: '*' }
     ])
   }
 
-  dataSource.load = load(http, cfg.options, dataSource, shouldFetch)
+  dataSource.load = load(http, config.options, dataSource, shouldFetch)
 })
 
 export default dataSourceMap

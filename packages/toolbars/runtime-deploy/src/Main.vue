@@ -28,7 +28,7 @@ export default {
   },
   setup() {
     const deploy = async () => {
-      // 检查页面状态 - 确保有内容可以部署
+      // 检查页面状态，确保有内容
       if (useLayout().isEmptyPage()) {
         useNotify({
           type: 'warning',
