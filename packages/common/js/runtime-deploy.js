@@ -17,10 +17,10 @@ let runtimeWindow = null
 const getQueryParams = () => {
   const paramsMap = new URLSearchParams(location.search)
   const tenant = paramsMap.get('tenant') || ''
-  const framework = getMergeMeta('engine.config')?.dslMode
   const platform = getMergeMeta('engine.config')?.platformId
+  const appId = paramsMap.get('id')
 
-  let query = `tenant=${tenant}&id=${paramsMap.get('id')}&framework=${framework}&platform=${platform}`
+  let query = `id=${appId}&tenant=${tenant}&platform=${platform}`
   return query
 }
 
@@ -44,7 +44,6 @@ export const deployPage = async () => {
 export const runtimeDeploy = async () => {
   const { openUrl } = await deployPage()
 
-  // 若已打开运行窗口，则仅聚焦并发送一次最新 schema
   if (runtimeWindow && !runtimeWindow.closed) {
     try {
       runtimeWindow.focus()
@@ -55,6 +54,5 @@ export const runtimeDeploy = async () => {
     return
   }
 
-  // 打开（或复用命名）窗口
   runtimeWindow = window.open(openUrl, 'tiny-engine-runtime')
 }
