@@ -12,10 +12,11 @@
 
 import { h, computed, provide, nextTick, reactive, watch, defineComponent, inject } from 'vue'
 import Loading from '../components/Loading.vue'
-import renderer, { parseData, setPageCss } from './index'
+import { parseData } from './parser/parser.ts'
+import { setPageCss } from './page-function/css-handler.ts'
 import { useState } from './page-function/state'
 import useContext from './useContext.ts'
-import { PageLifecycleWrapper } from './RuntimeLifecycle'
+import { PageLifecycleWrapper } from './LifecycleWrapper.ts'
 import { useRouter, useRoute } from 'vue-router'
 import { useAppSchema } from '../composables/useAppSchema'
 import type { PageContent as Schema } from '../types/schema'
@@ -108,7 +109,6 @@ export default defineComponent({
       },
       { immediate: true }
     )
-
     return {
       pageSchema,
       methods,
@@ -126,12 +126,8 @@ export default defineComponent({
       children: pageSchema.children
     }
 
-    return pageSchema.children?.length
-      ? h(PageLifecycleWrapper, {
-          schema: rootChildrenSchema,
-          lifeCycles: pageSchema.lifeCycles || {},
-          renderContent: (_state) => h(renderer, { schema: rootChildrenSchema, parent: pageSchema })
-        })
+    return this.pageSchema.children?.length
+      ? h(PageLifecycleWrapper, { schema: rootChildrenSchema, parent: this.pageSchema })
       : [h(Loading)]
   }
 })
