@@ -16,6 +16,7 @@
   "dependencies": {
     "@opentiny/tiny-engine-builtin-component": "workspace:*",
     "@opentiny/tiny-engine-i18n-host": "workspace:*",
+    "@vue/shared": "^3.3.4",
     "axios": "latest",
     "axios-mock-adapter": "^1.19.0",
     "element-plus": "2.4.2",
