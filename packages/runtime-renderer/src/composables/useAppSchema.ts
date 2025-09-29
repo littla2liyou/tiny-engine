@@ -1,26 +1,16 @@
 import { ref, computed, readonly } from 'vue'
 import type { AppSchema, Util, BlockItem, BlockContent, I18nConfig } from '../types/schema'
 import { initUtils } from '../app-function/utils'
-// import appSchemaMock from '../mock/appSchema.json'
-// import blocksMock from '../mock/blocks.json'
 import i18n from '@opentiny/tiny-engine-i18n-host'
 
 const appSchema = ref<AppSchema | null>(null)
 const isLoading = ref(false)
 const error = ref<string | null>(null)
-const searchParams = new URLSearchParams(location.search)
-const appId = searchParams.get('id')
-
 export function useAppSchema() {
   // 初始化工具函数
   const initializeUtils = async (utils: Util[]) => {
-    // eslint-disable-next-line no-console
-    console.log('初始化工具函数:', utils.length, '个函数')
-
     try {
       await initUtils(utils)
-      // eslint-disable-next-line no-console
-      console.log('工具函数初始化完成')
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('工具函数初始化失败:', error)
@@ -31,9 +21,6 @@ export function useAppSchema() {
   const injectGlobalCSS = (css: string) => {
     if (!css) return
 
-    // eslint-disable-next-line no-console
-    console.log('注入全局CSS：{ css.length } 字符')
-    // 创建style标签并注入CSS
     const style = document.createElement('style')
     style.textContent = css
     document.head.appendChild(style)
@@ -61,23 +48,16 @@ export function useAppSchema() {
   }
 
   // 拉取完整应用schema
-  const fetchAppSchema = async (_appId?: string) => {
+  const fetchAppSchema = async (appId: string) => {
     isLoading.value = true
     error.value = null
 
     try {
-      // 使用mock数据，实际项目中这里会调用API
       const response = await fetch(`/app-center/v1/api/apps/schema/${appId}`)
       appSchema.value = await response.json()
 
-      // eslint-disable-next-line no-console
-      console.log('拉取到的应用Schema:', response)
-
       // 解析并初始化应用级配置
       await initializeAppConfig(appSchema.value)
-
-      // eslint-disable-next-line no-console
-      console.log('应用Schema加载成功:', response)
     } catch (err) {
       error.value = err instanceof Error ? err.message : '加载应用Schema失败'
       // eslint-disable-next-line no-console
@@ -88,8 +68,7 @@ export function useAppSchema() {
   }
 
   // 拉取区块schema
-  // 在 useAppSchema.ts 中
-  const fetchBlocks = async (_appId?: string) => {
+  const fetchBlocks = async () => {
     const response = await fetch('/material-center/api/blocks')
     const blockJSON = await response.json()
     const blocks: BlockItem[] = blockJSON.data || []
@@ -122,8 +101,6 @@ export function useAppSchema() {
     })
 
     window.blocks = blocksMap
-    // eslint-disable-next-line no-console
-    console.log('区块数据已加载到 window.blocks:', window.blocks)
   }
 
   // 获取页面列表
@@ -131,39 +108,11 @@ export function useAppSchema() {
     if (!appSchema.value?.data?.componentsTree) return []
     return appSchema.value.data.componentsTree
   })
-
-  // 根据路由获取页面
-  const getPageByRoute = (route: string) => {
-    if (!pages.value) return null
-    return pages.value.find((page) => page.meta.router === route)
-  }
-
   // 根据ID获取页面
   const getPageById = (id: number) => {
     if (!pages.value) return null
     return pages.value.find((page) => page.meta.id === id)
   }
-
-  // 获取默认页面（首页）
-  const defaultPage = computed(() => {
-    if (!pages.value) return null
-    return pages.value.find((page) => page.meta.isHome) || pages.value[0]
-  })
-
-  // 获取应用配置
-  const appConfig = computed(() => {
-    return appSchema.value?.data?.config || null
-  })
-
-  // 获取应用元信息
-  const appMeta = computed(() => {
-    return appSchema.value?.data?.meta || null
-  })
-
-  // 获取组件映射表
-  const componentsMap = computed(() => {
-    return appSchema.value?.data?.componentsMap || []
-  })
 
   // 获取数据源配置
   const dataSourceConfig = computed(() => {
@@ -197,10 +146,6 @@ export function useAppSchema() {
 
     // 计算属性
     pages,
-    defaultPage,
-    appConfig,
-    appMeta,
-    componentsMap,
     dataSourceConfig,
     globalStates,
     packages,
@@ -210,7 +155,6 @@ export function useAppSchema() {
     // 方法
     fetchAppSchema,
     fetchBlocks,
-    getPageByRoute,
     getPageById,
 
     // 初始化方法
