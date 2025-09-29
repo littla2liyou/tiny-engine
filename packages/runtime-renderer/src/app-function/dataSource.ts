@@ -1,4 +1,4 @@
-import useHttp from '../http'
+import useHttp from './http'
 import { useAppSchema } from '../composables/useAppSchema'
 import { parseJSFunction } from '../utils/data-utils'
 
