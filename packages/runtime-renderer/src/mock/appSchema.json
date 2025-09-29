@@ -2408,7 +2408,7 @@
                   {
                     "componentName": "Text",
                     "props": {
-                      "text": "首页"
+                      "text": "/fivea"
                     },
                     "id": "11324214"
                   }
@@ -2435,37 +2435,12 @@
                   {
                     "componentName": "Text",
                     "props": {
-                      "text": "介绍"
+                      "text": "/fiveb"
                     },
                     "id": "22525242"
                   }
                 ],
                 "id": "56426524"
-              },
-              {
-                "componentName": "RouterLink",
-                "props": {
-                  "to": "",
-                  "style": "display: inline-flex; gap: 8px; padding: 10px 20px; color: inherit; text-decoration: none;"
-                },
-                "children": [
-                  {
-                    "componentName": "Icon",
-                    "props": {
-                      "name": "IconText",
-                      "style": "margin-top: 3px;"
-                    },
-                    "id": "41b23426"
-                  },
-                  {
-                    "componentName": "Text",
-                    "props": {
-                      "text": "文档"
-                    },
-                    "id": "75562253"
-                  }
-                ],
-                "id": "44666614"
               }
             ],
             "id": "4267e3f2"
@@ -2546,7 +2521,7 @@
                       {
                         "componentName": "Text",
                         "props": {
-                          "text": "首页"
+                          "text": "/fivea"
                         },
                         "id": "11324214"
                       }
@@ -2573,37 +2548,12 @@
                       {
                         "componentName": "Text",
                         "props": {
-                          "text": "介绍"
+                          "text": "/fiveb"
                         },
                         "id": "22525242"
                       }
                     ],
                     "id": "56426524"
-                  },
-                  {
-                    "componentName": "RouterLink",
-                    "props": {
-                      "to": "",
-                      "style": "display: inline-flex; gap: 8px; padding: 10px 20px; color: inherit; text-decoration: none;"
-                    },
-                    "children": [
-                      {
-                        "componentName": "Icon",
-                        "props": {
-                          "name": "IconText",
-                          "style": "margin-top: 3px;"
-                        },
-                        "id": "41b23426"
-                      },
-                      {
-                        "componentName": "Text",
-                        "props": {
-                          "text": "文档"
-                        },
-                        "id": "75562253"
-                      }
-                    ],
-                    "id": "44666614"
                   }
                 ],
                 "id": "4267e3f2"
@@ -2620,7 +2570,11 @@
             "dataSource": {
               "list": []
             },
-            "state": {},
+            "state": {
+              "textTvie": {
+                "text": "Tfive"
+              }
+            },
             "methods": {},
             "utils": [],
             "bridge": [],
@@ -2637,7 +2591,11 @@
         "props": {
           "className": "page-base-style"
         },
-        "state": {}
+        "state": {
+          "textTvie": {
+            "text": "Tfive"
+          }
+        }
       },
       {
         "children": [
@@ -2744,52 +2702,117 @@
       {
         "children": [
           {
-            "componentName": "Text",
+            "componentName": "ElDatePicker",
             "props": {
-              "style": "display: inline-block;",
-              "text": "TinyEngine 前端可视化设计器，为设计器开发者提供定制服务，在线构建出自己专属的设计器。",
               "className": "component-base-style"
             },
             "children": [],
-            "id": "55d2b251"
+            "id": "e5239a66"
           },
           {
-            "componentName": "TinyButton",
-            "props": {
-              "text": {
-                "type": "JSExpression",
-                "value": "this.state.state1.button"
+            "componentName": "ElForm",
+            "children": [
+              {
+                "componentName": "ElFormItem",
+                "props": {
+                  "label": "账号",
+                  "prop": "account"
+                },
+                "children": [
+                  {
+                    "componentName": "ElInput",
+                    "props": {
+                      "modelValue": "",
+                      "placeholder": "请输入账号"
+                    },
+                    "id": "33253586"
+                  }
+                ],
+                "id": "5c745f66"
               },
-              "className": "component-base-style",
-              "onClick": {
-                "type": "JSExpression",
-                "value": "this.onClickNew1"
+              {
+                "componentName": "ElFormItem",
+                "props": {
+                  "label": "密码",
+                  "prop": "password"
+                },
+                "children": [
+                  {
+                    "componentName": "ElInput",
+                    "props": {
+                      "modelValue": "",
+                      "placeholder": "请输入密码",
+                      "type": "password"
+                    },
+                    "id": "e5654633"
+                  }
+                ],
+                "id": "42145465"
+              },
+              {
+                "componentName": "ElFormItem",
+                "props": {},
+                "children": [
+                  {
+                    "componentName": "ElButton",
+                    "props": {
+                      "type": "primary",
+                      "style": "margin-right: 10px"
+                    },
+                    "children": [
+                      {
+                        "componentName": "Text",
+                        "props": {
+                          "text": "提交"
+                        },
+                        "id": "35376252"
+                      }
+                    ],
+                    "id": "f51fbc69"
+                  },
+                  {
+                    "componentName": "ElButton",
+                    "props": {
+                      "type": "primary"
+                    },
+                    "children": [
+                      {
+                        "componentName": "Text",
+                        "props": {
+                          "text": "重置"
+                        },
+                        "id": "49346333"
+                      }
+                    ],
+                    "id": "24245522"
+                  }
+                ],
+                "id": "56fa5244"
               }
-            },
-            "children": [],
-            "id": "45386344"
-          },
-          {
-            "componentName": "div",
+            ],
             "props": {
               "className": "component-base-style"
+            },
+            "id": "1d554376"
+          },
+          {
+            "componentName": "RouterLink",
+            "props": {
+              "className": "component-base-style",
+              "to": {
+                "name": "3"
+              }
             },
             "children": [
               {
                 "componentName": "Text",
                 "props": {
-                  "style": "display: inline-block;",
-                  "text": {
-                    "type": "JSExpression",
-                    "value": "this.state.state2"
-                  },
-                  "className": "component-base-style"
+                  "text": "ttwo"
                 },
-                "children": [],
-                "id": "63346222"
+                "id": "392555b2"
               }
             ],
-            "id": "622a8416"
+            "id": "5d9a6439"
           }
         ],
         "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
@@ -2833,63 +2856,123 @@
             "lifeCycles": {},
             "children": [
               {
-                "componentName": "Text",
+                "componentName": "ElDatePicker",
                 "props": {
-                  "style": "display: inline-block;",
-                  "text": "TinyEngine 前端可视化设计器，为设计器开发者提供定制服务，在线构建出自己专属的设计器。",
                   "className": "component-base-style"
                 },
                 "children": [],
-                "id": "55d2b251"
+                "id": "e5239a66"
               },
               {
-                "componentName": "TinyButton",
-                "props": {
-                  "text": {
-                    "type": "JSExpression",
-                    "value": "this.state.state1.button"
+                "componentName": "ElForm",
+                "children": [
+                  {
+                    "componentName": "ElFormItem",
+                    "props": {
+                      "label": "账号",
+                      "prop": "account"
+                    },
+                    "children": [
+                      {
+                        "componentName": "ElInput",
+                        "props": {
+                          "modelValue": "",
+                          "placeholder": "请输入账号"
+                        },
+                        "id": "33253586"
+                      }
+                    ],
+                    "id": "5c745f66"
                   },
-                  "className": "component-base-style",
-                  "onClick": {
-                    "type": "JSExpression",
-                    "value": "this.onClickNew1"
+                  {
+                    "componentName": "ElFormItem",
+                    "props": {
+                      "label": "密码",
+                      "prop": "password"
+                    },
+                    "children": [
+                      {
+                        "componentName": "ElInput",
+                        "props": {
+                          "modelValue": "",
+                          "placeholder": "请输入密码",
+                          "type": "password"
+                        },
+                        "id": "e5654633"
+                      }
+                    ],
+                    "id": "42145465"
+                  },
+                  {
+                    "componentName": "ElFormItem",
+                    "props": {},
+                    "children": [
+                      {
+                        "componentName": "ElButton",
+                        "props": {
+                          "type": "primary",
+                          "style": "margin-right: 10px"
+                        },
+                        "children": [
+                          {
+                            "componentName": "Text",
+                            "props": {
+                              "text": "提交"
+                            },
+                            "id": "35376252"
+                          }
+                        ],
+                        "id": "f51fbc69"
+                      },
+                      {
+                        "componentName": "ElButton",
+                        "props": {
+                          "type": "primary"
+                        },
+                        "children": [
+                          {
+                            "componentName": "Text",
+                            "props": {
+                              "text": "重置"
+                            },
+                            "id": "49346333"
+                          }
+                        ],
+                        "id": "24245522"
+                      }
+                    ],
+                    "id": "56fa5244"
                   }
-                },
-                "children": [],
-                "id": "45386344"
-              },
-              {
-                "componentName": "div",
+                ],
                 "props": {
                   "className": "component-base-style"
+                },
+                "id": "1d554376"
+              },
+              {
+                "componentName": "RouterLink",
+                "props": {
+                  "className": "component-base-style",
+                  "to": {
+                    "name": "3"
+                  }
                 },
                 "children": [
                   {
                     "componentName": "Text",
                     "props": {
-                      "style": "display: inline-block;",
-                      "text": {
-                        "type": "JSExpression",
-                        "value": "this.state.state2"
-                      },
-                      "className": "component-base-style"
+                      "text": "ttwo"
                     },
-                    "children": [],
-                    "id": "63346222"
+                    "id": "392555b2"
                   }
                 ],
-                "id": "622a8416"
+                "id": "5d9a6439"
               }
             ],
             "dataSource": {
               "list": []
             },
-            "state": {
-              "state1": {
-                "button": 1
-              },
-              "state2": "str"
-            },
+            "state": {},
             "methods": {
               "onClickNew1": {
                 "type": "JSFunction",
@@ -2916,134 +2999,154 @@
         "props": {
           "className": "page-base-style"
         },
-        "state": {
-          "state1": {
-            "button": 1
-          },
-          "state2": "str"
-        }
+        "state": {}
       },
       {
         "children": [
           {
-            "componentName": "TinyButton",
+            "componentName": "Collection",
             "props": {
-              "text": {
-                "type": "JSExpression",
-                "value": "this.stores.ttest1.text"
-              },
+              "className": "component-base-style",
+              "dataSource": 1
+            },
+            "children": [
+              {
+                "componentName": "TinyGrid",
+                "props": {
+                  "editConfig": {
+                    "trigger": "click",
+                    "mode": "cell",
+                    "showStatus": true
+                  },
+                  "columns": [
+                    {
+                      "title": "姓名",
+                      "field": "2"
+                    },
+                    {
+                      "title": "序号",
+                      "field": "1"
+                    }
+                  ],
+                  "className": "component-base-style",
+                  "fetchData": {
+                    "type": "JSExpression",
+                    "value": "{ api: this.getTableData536be324 }"
+                  },
+                  "pager": {
+                    "attrs": {
+                      "currentPage": 1,
+                      "pageSize": 50,
+                      "pageSizes": [10, 20, 50],
+                      "total": 0,
+                      "layout": "sizes,total, prev, pager, next, jumper"
+                    }
+                  }
+                },
+                "children": [],
+                "id": "33675561"
+              }
+            ],
+            "id": "536be324"
+          },
+          {
+            "componentName": "RouterLink",
+            "props": {
+              "className": "component-base-style",
+              "to": {
+                "name": "2"
+              }
+            },
+            "children": [
+              {
+                "componentName": "Text",
+                "props": {
+                  "text": "/tone:测试element-plus组件渲染 "
+                },
+                "id": "c5361165",
+                "children": []
+              }
+            ],
+            "id": "52344241"
+          },
+          {
+            "componentName": "RouterLink",
+            "props": {
+              "className": "component-base-style",
+              "to": {
+                "name": "6"
+              }
+            },
+            "children": [
+              {
+                "componentName": "Text",
+                "props": {
+                  "text": "/tfour: 测试两个区块同时渲染"
+                },
+                "id": "7336d695"
+              }
+            ],
+            "id": "222c2483"
+          },
+          {
+            "componentName": "RouterLink",
+            "props": {
+              "className": "component-base-style",
+              "to": {
+                "name": "1"
+              }
+            },
+            "children": [
+              {
+                "componentName": "Text",
+                "props": {
+                  "text": "/createVm"
+                },
+                "id": "51666233"
+              }
+            ],
+            "id": "33632634"
+          },
+          {
+            "componentName": "RouterLink",
+            "props": {
+              "className": "component-base-style",
+              "to": {
+                "name": "10"
+              }
+            },
+            "children": [
+              {
+                "componentName": "Text",
+                "props": {
+                  "text": "tfive/fiveb嵌套路由"
+                },
+                "id": "45545223"
+              }
+            ],
+            "id": "45462c3c"
+          },
+          {
+            "componentName": "div",
+            "props": {
               "className": "component-base-style"
             },
-            "children": [],
-            "id": "3656653d"
-          }
-        ],
-        "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
-        "componentName": "Page",
-        "fileName": "Tthree",
-        "lifeCycles": {},
-        "meta": {
-          "app": 1,
-          "gmt_create": "2025-08-27 12:22:59",
-          "lastUpdatedBy": "1",
-          "creator": "1",
-          "rootElement": false,
-          "contentBlocks": [],
-          "isHome": false,
-          "occupier": {
-            "id": "1",
-            "createdBy": "1",
-            "lastUpdatedBy": "1",
-            "tenantId": "1",
-            "siteId": "1",
-            "username": "开发者",
-            "email": "developer@lowcode.com",
-            "isAdmin": true,
-            "created_at": "2024-10-16 23:28:41",
-            "updated_at": "2024-10-16 23:28:41"
-          },
-          "gmt_modified": "2025-08-27 12:22:59",
-          "parentId": "0",
-          "occupierBy": "1",
-          "isDefault": false,
-          "router": "tthree",
-          "depth": 0,
-          "tenantId": "1",
-          "name": "Tthree",
-          "page_content": {
-            "componentName": "Page",
-            "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
-            "props": {
-              "className": "page-base-style"
-            },
-            "lifeCycles": {},
             "children": [
               {
                 "componentName": "TinyButton",
                 "props": {
-                  "text": {
+                  "className": "component-base-style",
+                  "text": "路由至tzero进行多项测试",
+                  "onClick": {
                     "type": "JSExpression",
-                    "value": "this.stores.ttest1.text"
-                  },
-                  "className": "component-base-style"
+                    "value": "this.onClickNew"
+                  }
                 },
                 "children": [],
-                "id": "3656653d"
+                "id": "45324446"
               }
             ],
-            "dataSource": {
-              "list": []
-            },
-            "state": {
-              "state1": {
-                "button": 1
-              }
-            },
-            "methods": {},
-            "utils": [],
-            "bridge": [],
-            "inputs": [],
-            "outputs": [],
-            "fileName": "Tthree",
-            "id": "body"
-          },
-          "id": 4,
-          "isPage": true,
-          "group": "staticPages"
-        },
-        "methods": {},
-        "props": {
-          "className": "page-base-style"
-        },
-        "state": {
-          "state1": {
-            "button": 1
-          }
-        }
-      },
-      {
-        "children": [
-          {
-            "componentName": "TinyButton",
-            "props": {
-              "className": "component-base-style",
-              "text": "路由至tzero",
-              "onClick": {
-                "type": "JSExpression",
-                "value": "this.onClickNew"
-              }
-            },
-            "children": [],
-            "id": "45324446"
-          },
-          {
-            "componentName": "TinyButton",
-            "props": {
-              "text": "按钮文案",
-              "className": "component-base-style"
-            },
-            "children": [],
-            "id": "34357563"
+            "id": "36665265"
           }
         ],
         "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
@@ -3057,7 +3160,7 @@
           "creator": "1",
           "rootElement": false,
           "contentBlocks": [],
-          "isHome": false,
+          "isHome": true,
           "occupier": {
             "id": "1",
             "createdBy": "1",
@@ -3082,35 +3185,154 @@
             "componentName": "Page",
             "css": ".page-base-style {\n  padding: 24px;background: #FFFFFF;\n}\n\n.block-base-style {\n  margin: 16px;\n}\n\n.component-base-style {\n  margin: 8px;\n}\n",
             "props": {
-              "className": "page-base-style",
-              "onClick": {
-                "type": "JSExpression",
-                "value": "this.onClickNew"
-              }
+              "className": "page-base-style"
             },
             "lifeCycles": {},
             "children": [
               {
-                "componentName": "TinyButton",
+                "componentName": "Collection",
                 "props": {
                   "className": "component-base-style",
-                  "text": "路由至tzero",
-                  "onClick": {
-                    "type": "JSExpression",
-                    "value": "this.onClickNew"
-                  }
+                  "dataSource": 1
                 },
-                "children": [],
-                "id": "45324446"
+                "children": [
+                  {
+                    "componentName": "TinyGrid",
+                    "props": {
+                      "editConfig": {
+                        "trigger": "click",
+                        "mode": "cell",
+                        "showStatus": true
+                      },
+                      "columns": [
+                        {
+                          "title": "姓名",
+                          "field": "2"
+                        },
+                        {
+                          "title": "序号",
+                          "field": "1"
+                        }
+                      ],
+                      "className": "component-base-style",
+                      "fetchData": {
+                        "type": "JSExpression",
+                        "value": "{ api: this.getTableData536be324 }"
+                      },
+                      "pager": {
+                        "attrs": {
+                          "currentPage": 1,
+                          "pageSize": 50,
+                          "pageSizes": [10, 20, 50],
+                          "total": 0,
+                          "layout": "sizes,total, prev, pager, next, jumper"
+                        }
+                      }
+                    },
+                    "children": [],
+                    "id": "33675561"
+                  }
+                ],
+                "id": "536be324"
               },
               {
-                "componentName": "TinyButton",
+                "componentName": "RouterLink",
                 "props": {
-                  "text": "按钮文案",
+                  "className": "component-base-style",
+                  "to": {
+                    "name": "2"
+                  }
+                },
+                "children": [
+                  {
+                    "componentName": "Text",
+                    "props": {
+                      "text": "/tone:测试element-plus组件渲染 "
+                    },
+                    "id": "c5361165",
+                    "children": []
+                  }
+                ],
+                "id": "52344241"
+              },
+              {
+                "componentName": "RouterLink",
+                "props": {
+                  "className": "component-base-style",
+                  "to": {
+                    "name": "6"
+                  }
+                },
+                "children": [
+                  {
+                    "componentName": "Text",
+                    "props": {
+                      "text": "/tfour: 测试两个区块同时渲染"
+                    },
+                    "id": "7336d695"
+                  }
+                ],
+                "id": "222c2483"
+              },
+              {
+                "componentName": "RouterLink",
+                "props": {
+                  "className": "component-base-style",
+                  "to": {
+                    "name": "1"
+                  }
+                },
+                "children": [
+                  {
+                    "componentName": "Text",
+                    "props": {
+                      "text": "/createVm"
+                    },
+                    "id": "51666233"
+                  }
+                ],
+                "id": "33632634"
+              },
+              {
+                "componentName": "RouterLink",
+                "props": {
+                  "className": "component-base-style",
+                  "to": {
+                    "name": "10"
+                  }
+                },
+                "children": [
+                  {
+                    "componentName": "Text",
+                    "props": {
+                      "text": "tfive/fiveb嵌套路由"
+                    },
+                    "id": "45545223"
+                  }
+                ],
+                "id": "45462c3c"
+              },
+              {
+                "componentName": "div",
+                "props": {
                   "className": "component-base-style"
                 },
-                "children": [],
-                "id": "34357563"
+                "children": [
+                  {
+                    "componentName": "TinyButton",
+                    "props": {
+                      "className": "component-base-style",
+                      "text": "路由至tzero进行多项测试",
+                      "onClick": {
+                        "type": "JSExpression",
+                        "value": "this.onClickNew"
+                      }
+                    },
+                    "children": [],
+                    "id": "45324446"
+                  }
+                ],
+                "id": "36665265"
               }
             ],
             "dataSource": {
@@ -3125,6 +3347,14 @@
               "onClickNew": {
                 "type": "JSFunction",
                 "value": "function onClickNew(event) {\n  this.router.push('/tzero')\n}\n"
+              },
+              "getTableData536be324": {
+                "type": "JSFunction",
+                "value": "function getTableData536be324({ page, sort, sortBy, filters }) {\n  /**\n   * @param {Object} sort 排序数据\n   * @param {Array} sortBy 排序方式\n   * @param {Object} page 分页数据\n   * @param {Array} filters 筛选数据\n   * @returns {Object} 返回一个promise对象，并且resolve格式为{ result: Array, page: { total: Number } }\n   */\n  return new Promise((resolve, reject) => {\n    this.dataSourceMap.tableTest1.load().then((res) => {\n      // 如果按照数据源面板的建议格式编写dataHandler\n      // 那么dataSourceMap的res格式应该是：{ code: string, msg: string, data: {items: any[], total: number} }\n      resolve({ result: res.data.items, page: { total: res.data.total } })\n    })\n  })\n}\n"
+              },
+              "onClickNew1": {
+                "type": "JSFunction",
+                "value": "function onClickNew1(event) {\n  this.state.button++\n}\n"
               }
             },
             "utils": [],
@@ -3142,14 +3372,18 @@
           "onClickNew": {
             "type": "JSFunction",
             "value": "function onClickNew(event) {\n  this.router.push('/tzero')\n}\n"
+          },
+          "getTableData536be324": {
+            "type": "JSFunction",
+            "value": "function getTableData536be324({ page, sort, sortBy, filters }) {\n  /**\n   * @param {Object} sort 排序数据\n   * @param {Array} sortBy 排序方式\n   * @param {Object} page 分页数据\n   * @param {Array} filters 筛选数据\n   * @returns {Object} 返回一个promise对象，并且resolve格式为{ result: Array, page: { total: Number } }\n   */\n  return new Promise((resolve, reject) => {\n    this.dataSourceMap.tableTest1.load().then((res) => {\n      // 如果按照数据源面板的建议格式编写dataHandler\n      // 那么dataSourceMap的res格式应该是：{ code: string, msg: string, data: {items: any[], total: number} }\n      resolve({ result: res.data.items, page: { total: res.data.total } })\n    })\n  })\n}\n"
+          },
+          "onClickNew1": {
+            "type": "JSFunction",
+            "value": "function onClickNew1(event) {\n  this.state.button++\n}\n"
           }
         },
         "props": {
-          "className": "page-base-style",
-          "onClick": {
-            "type": "JSExpression",
-            "value": "this.onClickNew"
-          }
+          "className": "page-base-style"
         },
         "state": {
           "state1": {
@@ -3186,6 +3420,38 @@
                 "componentName": "Text",
                 "props": {
                   "style": "display: inline-block;",
+                  "text": "[utils测试]",
+                  "className": "component-base-style"
+                },
+                "children": [],
+                "id": "d32123e2"
+              },
+              {
+                "componentName": "TinyButton",
+                "props": {
+                  "className": "component-base-style",
+                  "onClick": {
+                    "type": "JSExpression",
+                    "value": "this.testUtils"
+                  },
+                  "text": "测试function和npm包的导入"
+                },
+                "children": [],
+                "id": "15662591"
+              }
+            ],
+            "id": "644ba646"
+          },
+          {
+            "componentName": "div",
+            "props": {
+              "className": "component-base-style"
+            },
+            "children": [
+              {
+                "componentName": "Text",
+                "props": {
+                  "style": "display: inline-block;",
                   "text": "[state测试]：点击增加button计数",
                   "className": "component-base-style"
                 },
@@ -3197,7 +3463,7 @@
                 "props": {
                   "text": {
                     "type": "JSExpression",
-                    "value": "this.state.state1.button"
+                    "value": "this.state.state1.deep.deepButton"
                   },
                   "className": "component-base-style",
                   "onClick": {
@@ -3220,22 +3486,6 @@
                 },
                 "children": [],
                 "id": "36141245"
-              },
-              {
-                "componentName": "TinyButton",
-                "props": {
-                  "text": {
-                    "type": "JSExpression",
-                    "value": "this.state.state1.deep.deepButton"
-                  },
-                  "className": "component-base-style",
-                  "onClick": {
-                    "type": "JSExpression",
-                    "value": "this.onClickNew2"
-                  }
-                },
-                "children": [],
-                "id": "612645a7"
               }
             ],
             "id": "4355544e"
@@ -3390,14 +3640,14 @@
                 "props": {
                   "className": "component-base-style",
                   "to": {
-                    "name": "9"
+                    "name": "8"
                   }
                 },
                 "children": [
                   {
                     "componentName": "Text",
                     "props": {
-                      "text": "路由到嵌套路由Tfive/fiveA"
+                      "text": "路由到嵌套路由Tfive，默认跳转页为Tfive/fiveA"
                     },
                     "id": "5251f652"
                   }
@@ -3418,7 +3668,7 @@
                 "props": {
                   "style": "display: inline-block;",
                   "className": "component-base-style",
-                  "text": "国际化测试："
+                  "text": "[国际化测试]："
                 },
                 "children": [],
                 "id": "25661983"
@@ -3528,6 +3778,41 @@
             "id": "24125532"
           },
           {
+            "componentName": "div",
+            "props": {
+              "className": "component-base-style"
+            },
+            "children": [
+              {
+                "componentName": "TinyButton",
+                "props": {
+                  "text": {
+                    "type": "JSExpression",
+                    "value": "this.state.state1.deep.deepButton"
+                  },
+                  "className": "component-base-style",
+                  "onClick": {
+                    "type": "JSExpression",
+                    "value": "this.onClickNew2"
+                  }
+                },
+                "children": [],
+                "id": "612645a7"
+              },
+              {
+                "componentName": "Text",
+                "props": {
+                  "style": "display: inline-block;",
+                  "className": "component-base-style",
+                  "text": "打印数据源.load()方法返回结果"
+                },
+                "children": [],
+                "id": "2826635a"
+              }
+            ],
+            "id": "1e5292df"
+          },
+          {
             "componentName": "Collection",
             "props": {
               "className": "component-base-style",
@@ -3540,7 +3825,7 @@
                   "style": "display: inline-block;",
                   "text": {
                     "type": "JSExpression",
-                    "value": "this.state.datasourceRemoteTest"
+                    "value": "this.state.datasourceRemoteTest.code"
                   },
                   "className": "component-base-style"
                 },
@@ -3570,7 +3855,7 @@
         "lifeCycles": {
           "setup": {
             "type": "JSFunction",
-            "value": "function setup({\n  props,\n  state,\n  watch,\n  onMounted\n}) {\n  console.log('[setup]');\n\n  /** start-datasourceTableTest1 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.tableTest1.load().then(res => {\n    state.datasourceTableTest1 = res?.data?.items || res?.data || res;\n  });\n  /** end-datasourceTableTest1 */\n\n  /** start-datasourceRemoteTest 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.remoteTest.load().then(res => {\n    state.datasourceRemoteTest = res?.data?.items || res?.data || res;\n    console.log(state.datasourceRemoteTest)\n  });\n  /** end-datasourceRemoteTest */\n\n  /** start-datasourceLocalhost 设计器生成的代码，为了避免出现问题，请勿修改 */\n  state.intervalIdLocalhost = setInterval(() => {\n    this.dataSourceMap.localhost.load().then(res => {\n      state.datasourceLocalhost = res?.data?.items || res?.data || res\n    })\n  }, 5000);\n  /** end-datasourceLocalhost */\n  \n  return 0\n}"
+            "value": "function setup({\n  props,\n  state,\n  watch,\n  onMounted\n}) {\n  console.log('[setup]');\n\n  /** start-datasourceTableTest1 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.tableTest1.load().then(res => {\n    state.datasourceTableTest1 = res?.data?.items || res?.data || res;\n  });\n  /** end-datasourceTableTest1 */\n\n  /** start-datasourceRemoteTest 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.remoteTest.load().then(res => {\n    state.datasourceRemoteTest = res?.data?.items || res?.data || res;\n  });\n  /** end-datasourceRemoteTest */\n\n  /** start-datasourceLocalhost 设计器生成的代码，为了避免出现问题，请勿修改 */\n  state.intervalIdLocalhost = setInterval(() => {\n    this.dataSourceMap.localhost.load().then(res => {\n      state.datasourceLocalhost = res?.data?.items || res?.data || res\n    })\n  }, 5000);\n  /** end-datasourceLocalhost */\n  \n  return 0\n}"
           },
           "onBeforeMount": {
             "type": "JSFunction",
@@ -3616,7 +3901,7 @@
           "creator": "1",
           "rootElement": false,
           "contentBlocks": [],
-          "isHome": true,
+          "isHome": false,
           "occupier": {
             "id": "1",
             "createdBy": "1",
@@ -3648,7 +3933,7 @@
             "lifeCycles": {
               "setup": {
                 "type": "JSFunction",
-                "value": "function setup({\n  props,\n  state,\n  watch,\n  onMounted\n}) {\n  console.log('[setup]');\n\n  /** start-datasourceTableTest1 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.tableTest1.load().then(res => {\n    state.datasourceTableTest1 = res?.data?.items || res?.data || res;\n  });\n  /** end-datasourceTableTest1 */\n\n  /** start-datasourceRemoteTest 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.remoteTest.load().then(res => {\n    state.datasourceRemoteTest = res?.data?.items || res?.data || res;\n    console.log(state.datasourceRemoteTest)\n  });\n  /** end-datasourceRemoteTest */\n\n  /** start-datasourceLocalhost 设计器生成的代码，为了避免出现问题，请勿修改 */\n  state.intervalIdLocalhost = setInterval(() => {\n    this.dataSourceMap.localhost.load().then(res => {\n      state.datasourceLocalhost = res?.data?.items || res?.data || res\n    })\n  }, 5000);\n  /** end-datasourceLocalhost */\n  \n  return 0\n}"
+                "value": "function setup({\n  props,\n  state,\n  watch,\n  onMounted\n}) {\n  console.log('[setup]');\n\n  /** start-datasourceTableTest1 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.tableTest1.load().then(res => {\n    state.datasourceTableTest1 = res?.data?.items || res?.data || res;\n  });\n  /** end-datasourceTableTest1 */\n\n  /** start-datasourceRemoteTest 设计器生成的代码，为了避免出现问题，请勿修改 */\n  this.dataSourceMap.remoteTest.load().then(res => {\n    state.datasourceRemoteTest = res?.data?.items || res?.data || res;\n  });\n  /** end-datasourceRemoteTest */\n\n  /** start-datasourceLocalhost 设计器生成的代码，为了避免出现问题，请勿修改 */\n  state.intervalIdLocalhost = setInterval(() => {\n    this.dataSourceMap.localhost.load().then(res => {\n      state.datasourceLocalhost = res?.data?.items || res?.data || res\n    })\n  }, 5000);\n  /** end-datasourceLocalhost */\n  \n  return 0\n}"
               },
               "onBeforeMount": {
                 "type": "JSFunction",
@@ -3715,6 +4000,38 @@
                     "componentName": "Text",
                     "props": {
                       "style": "display: inline-block;",
+                      "text": "[utils测试]",
+                      "className": "component-base-style"
+                    },
+                    "children": [],
+                    "id": "d32123e2"
+                  },
+                  {
+                    "componentName": "TinyButton",
+                    "props": {
+                      "className": "component-base-style",
+                      "onClick": {
+                        "type": "JSExpression",
+                        "value": "this.testUtils"
+                      },
+                      "text": "测试function和npm包的导入"
+                    },
+                    "children": [],
+                    "id": "15662591"
+                  }
+                ],
+                "id": "644ba646"
+              },
+              {
+                "componentName": "div",
+                "props": {
+                  "className": "component-base-style"
+                },
+                "children": [
+                  {
+                    "componentName": "Text",
+                    "props": {
+                      "style": "display: inline-block;",
                       "text": "[state测试]：点击增加button计数",
                       "className": "component-base-style"
                     },
@@ -3726,7 +4043,7 @@
                     "props": {
                       "text": {
                         "type": "JSExpression",
-                        "value": "this.state.state1.button"
+                        "value": "this.state.state1.deep.deepButton"
                       },
                       "className": "component-base-style",
                       "onClick": {
@@ -3749,22 +4066,6 @@
                     },
                     "children": [],
                     "id": "36141245"
-                  },
-                  {
-                    "componentName": "TinyButton",
-                    "props": {
-                      "text": {
-                        "type": "JSExpression",
-                        "value": "this.state.state1.deep.deepButton"
-                      },
-                      "className": "component-base-style",
-                      "onClick": {
-                        "type": "JSExpression",
-                        "value": "this.onClickNew2"
-                      }
-                    },
-                    "children": [],
-                    "id": "612645a7"
                   }
                 ],
                 "id": "4355544e"
@@ -3919,14 +4220,14 @@
                     "props": {
                       "className": "component-base-style",
                       "to": {
-                        "name": "9"
+                        "name": "8"
                       }
                     },
                     "children": [
                       {
                         "componentName": "Text",
                         "props": {
-                          "text": "路由到嵌套路由Tfive/fiveA"
+                          "text": "路由到嵌套路由Tfive，默认跳转页为Tfive/fiveA"
                         },
                         "id": "5251f652"
                       }
@@ -3947,7 +4248,7 @@
                     "props": {
                       "style": "display: inline-block;",
                       "className": "component-base-style",
-                      "text": "国际化测试："
+                      "text": "[国际化测试]："
                     },
                     "children": [],
                     "id": "25661983"
@@ -4057,6 +4358,41 @@
                 "id": "24125532"
               },
               {
+                "componentName": "div",
+                "props": {
+                  "className": "component-base-style"
+                },
+                "children": [
+                  {
+                    "componentName": "TinyButton",
+                    "props": {
+                      "text": {
+                        "type": "JSExpression",
+                        "value": "this.state.state1.deep.deepButton"
+                      },
+                      "className": "component-base-style",
+                      "onClick": {
+                        "type": "JSExpression",
+                        "value": "this.onClickNew2"
+                      }
+                    },
+                    "children": [],
+                    "id": "612645a7"
+                  },
+                  {
+                    "componentName": "Text",
+                    "props": {
+                      "style": "display: inline-block;",
+                      "className": "component-base-style",
+                      "text": "打印数据源.load()方法返回结果"
+                    },
+                    "children": [],
+                    "id": "2826635a"
+                  }
+                ],
+                "id": "1e5292df"
+              },
+              {
                 "componentName": "Collection",
                 "props": {
                   "className": "component-base-style",
@@ -4069,7 +4405,7 @@
                       "style": "display: inline-block;",
                       "text": {
                         "type": "JSExpression",
-                        "value": "this.state.datasourceRemoteTest"
+                        "value": "this.state.datasourceRemoteTest.code"
                       },
                       "className": "component-base-style"
                     },
@@ -4137,7 +4473,7 @@
             "methods": {
               "onClickNew": {
                 "type": "JSFunction",
-                "value": "function onClickNew(event) {\n  this.state.state1.button++\n  console.log(`[count_button]${this.state.state1.button}`)\n  this.utils.testFunction()\n}\n"
+                "value": "function onClickNew(event) {\n  this.state.state1.deep.deepButton++\n  console.log(`[count_button]${this.state.state1.deep.deepButton}`)\n}\n"
               },
               "onClickNewStoresButton": {
                 "type": "JSFunction",
@@ -4153,11 +4489,15 @@
               },
               "onClickNew2": {
                 "type": "JSFunction",
-                "value": "function onClickNew2(event) {\n  this.state.state1.deep.deepButton++\n  console.log('onClickNew2执行')\n  console.log(this.utils.axios)\n}\n"
+                "value": "function onClickNew2(event) {\n  this.state.state1.deep.deepButton++\n  console.log('onClickNew2执行')\n  console.log('this.dataSourceMap.tableTest1.load()', this.dataSourceMap.tableTest1.load())\n  console.log('this.dataSourceMap.remoteTest.load()', this.dataSourceMap.remoteTest.load())\n  console.log('this.state.datasourceRemoteTest.code', this.state.datasourceRemoteTest.code)\n}\n"
               },
               "onClickGetters": {
                 "type": "JSFunction",
                 "value": "function onClickGetters(event) {\n  this.stores.ttest1.consoleTest()\n  console.log(`this.stores.ttest1.button: ${this.stores.ttest1.button}`)\n  console.log(`this.stores.ttest1.doubleButton: ${this.stores.ttest1.doubleButton}`)\n}\n"
+              },
+              "testUtils": {
+                "type": "JSFunction",
+                "value": "function testUtils(event) {\n  const numbers = [2, 1, 2, 3, 3, 4, 5, 4]\n  console.log('original numbers: ', numbers)\n  const uniqueNumbers = this.utils.uniq(numbers)\n  console.log('numbers handled by uniq() which is exported from lodash: ', uniqueNumbers)\n  this.utils.testFunction()\n  console.log('this.utils.axios', this.utils.axios)\n}\n"
               }
             },
             "utils": [],
@@ -4174,7 +4514,7 @@
         "methods": {
           "onClickNew": {
             "type": "JSFunction",
-            "value": "function onClickNew(event) {\n  this.state.state1.button++\n  console.log(`[count_button]${this.state.state1.button}`)\n  this.utils.testFunction()\n}\n"
+            "value": "function onClickNew(event) {\n  this.state.state1.deep.deepButton++\n  console.log(`[count_button]${this.state.state1.deep.deepButton}`)\n}\n"
           },
           "onClickNewStoresButton": {
             "type": "JSFunction",
@@ -4190,11 +4530,15 @@
           },
           "onClickNew2": {
             "type": "JSFunction",
-            "value": "function onClickNew2(event) {\n  this.state.state1.deep.deepButton++\n  console.log('onClickNew2执行')\n  console.log(this.utils.axios)\n}\n"
+            "value": "function onClickNew2(event) {\n  this.state.state1.deep.deepButton++\n  console.log('onClickNew2执行')\n  console.log('this.dataSourceMap.tableTest1.load()', this.dataSourceMap.tableTest1.load())\n  console.log('this.dataSourceMap.remoteTest.load()', this.dataSourceMap.remoteTest.load())\n  console.log('this.state.datasourceRemoteTest.code', this.state.datasourceRemoteTest.code)\n}\n"
           },
           "onClickGetters": {
             "type": "JSFunction",
             "value": "function onClickGetters(event) {\n  this.stores.ttest1.consoleTest()\n  console.log(`this.stores.ttest1.button: ${this.stores.ttest1.button}`)\n  console.log(`this.stores.ttest1.doubleButton: ${this.stores.ttest1.doubleButton}`)\n}\n"
+          },
+          "testUtils": {
+            "type": "JSFunction",
+            "value": "function testUtils(event) {\n  const numbers = [2, 1, 2, 3, 3, 4, 5, 4]\n  console.log('original numbers: ', numbers)\n  const uniqueNumbers = this.utils.uniq(numbers)\n  console.log('numbers handled by uniq() which is exported from lodash: ', uniqueNumbers)\n  this.utils.testFunction()\n  console.log('this.utils.axios', this.utils.axios)\n}\n"
           }
         },
         "props": {
@@ -4247,7 +4591,7 @@
             "componentName": "Text",
             "props": {
               "style": "display: inline-block;",
-              "text": "This is page A",
+              "text": "This is page A（默认路由页面）",
               "className": "component-base-style"
             },
             "children": [],
@@ -4298,7 +4642,7 @@
                 "componentName": "Text",
                 "props": {
                   "style": "display: inline-block;",
-                  "text": "This is page A",
+                  "text": "This is page A（默认路由页面）",
                   "className": "component-base-style"
                 },
                 "children": [],
@@ -4308,13 +4652,18 @@
             "dataSource": {
               "list": []
             },
-            "state": {},
+            "state": {
+              "textFivea": {
+                "text": "fivea"
+              }
+            },
             "methods": {},
             "utils": [],
             "bridge": [],
             "inputs": [],
             "outputs": [],
-            "fileName": "FiveA"
+            "fileName": "FiveA",
+            "id": "body"
           },
           "id": 9,
           "isPage": true,
@@ -4324,7 +4673,11 @@
         "props": {
           "className": "page-base-style"
         },
-        "state": {}
+        "state": {
+          "textFivea": {
+            "text": "fivea"
+          }
+        }
       },
       {
         "children": [
