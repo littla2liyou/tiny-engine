@@ -84,7 +84,7 @@ const transformJSX = (code) => {
       ]
     ]
   })
-  return (res.code || '')
+  return (res?.code || '')
     .replace(/import \{.+\} from "vue";/, '')
     .replace(/h\(_?resolveComponent\((.*?)\)/g, `h(this.getComponent($1)`)
     .replace(/_?resolveComponent/g, 'h')
