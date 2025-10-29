@@ -194,9 +194,10 @@ const generateCollection = (schema) => {
 export const renderDefault = (
   children: any[],
   scope: Record<string, any>,
-  parent: any,
-  renderComponent: (schema: any, scope: Record<string, any>, parent: any) => any
+  parent: any
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
 ) => children.map?.((child) => renderComponent(child, scope, parent))
+
 const generateSlotGroup = (children, isCustomElm, schema) => {
   const slotGroup = {}
 
@@ -220,7 +221,7 @@ const generateSlotGroup = (children, isCustomElm, schema) => {
   return slotGroup
 }
 
-const renderSlot = (children, scope, schema, isCustomElm, context, renderComponent) => {
+const renderSlot = (children, scope, schema, isCustomElm, context) => {
   if (children.some((a) => a.componentName === 'Template')) {
     const slotGroup = generateSlotGroup(children, isCustomElm, schema)
     const slots = {}
@@ -228,13 +229,13 @@ const renderSlot = (children, scope, schema, isCustomElm, context, renderCompone
     Object.keys(slotGroup).forEach((slotName) => {
       const currentSlot = slotGroup[slotName]
 
-      slots[slotName] = ($scope) => renderDefault(currentSlot.value, { ...scope, ...$scope }, context, renderComponent)
+      slots[slotName] = ($scope) => renderDefault(currentSlot.value, { ...scope, ...$scope }, context)
     })
 
     return slots
   }
 
-  return { default: () => renderDefault(children, scope, context, renderComponent) }
+  return { default: () => renderDefault(children, scope, context) }
 }
 
 const _checkGroup = (componentName) => configure[componentName]?.nestingRule?.childWhitelist?.length
